@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pdp_project/presentation/balance_screen/balance_screen.dart';
+import 'package:pdp_project/presentation/input_screen/input_screen.dart';
+import 'package:pdp_project/presentation/input_screen/widget/bottom_item.dart';
 
 class PageBuilder extends StatefulWidget {
   const PageBuilder({super.key});
@@ -34,75 +37,56 @@ class _MainPagesState extends State<PageBuilder> {
           topLeft: Radius.circular(18),
           topRight: Radius.circular(18),
         ),
-        child: BottomNavigationBar(
-          backgroundColor: const Color(0xFF20BC82),
-          currentIndex: currentPage,
-          onTap: (i) {
-            controller.animateToPage(
-              i,
-              duration: const Duration(microseconds: 100),
-              curve: Curves.decelerate,
-            );
-          },
-          items: [
-             BottomNavigationBarItem(
-              icon: Text(
-                "Input",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      shadows: [
-                        Shadow(color: Colors.green.shade900, blurRadius: 10)
-                      ]
-                  )
+        child: SizedBox(
+            height: 70,
+            child: BottomAppBar(
+              color: Colors.green,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  BottomItem(
+                    onTap: () {
+                      setState(() {
+                        currentPage = 0;
+                      });
+                    },
+                    currentPage: currentPage,
+                    label: "Input",
+                    index: 0,
+                  ),
+                  BottomItem(
+                    onTap: () {
+                      setState(() {
+                        currentPage = 1;
+                      });
+                    },
+                    currentPage: currentPage,
+                    label: "Output",
+                    index: 1,
+                  ),
+                  BottomItem(
+                    onTap: () {
+                      setState(() {
+                        currentPage = 2;
+                      });
+                    },
+                    currentPage: currentPage,
+                    label: "Balance",
+                    index: 2,
+                  ),
+                  BottomItem(
+                    onTap: () {
+                      setState(() {
+                        currentPage = 3;
+                      });
+                    },
+                    currentPage: currentPage,
+                    label: "History",
+                    index: 3,
+                  ),
+                ],
               ),
-              label: "",
-              backgroundColor: const Color(0xFF20BC82),
-            ),
-            BottomNavigationBarItem(
-              icon: Text(
-                "Output",
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  shadows: [
-                    Shadow(color: Colors.green.shade900, blurRadius: 10)
-                  ]
-                )
-              ),
-              label: "",
-              backgroundColor: const Color(0xFF20BC82),
-            ),
-             BottomNavigationBarItem(
-              icon: Text(
-                "Balance",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      shadows: [
-                        Shadow(color: Colors.green.shade900, blurRadius: 10)
-                      ]
-                  )
-              ),
-              label: "",
-              backgroundColor: const Color(0xFF20BC82),
-            ),
-             BottomNavigationBarItem(
-              icon: Text(
-                "History",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      shadows: [
-                        Shadow(color: Colors.green.shade900, blurRadius: 10)
-                      ]
-                  )
-              ),
-              label: "",
-              backgroundColor: Color(0xFF20BC82),
-            ),
-          ],
-        ),
+            )),
       ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(),
@@ -112,9 +96,9 @@ class _MainPagesState extends State<PageBuilder> {
         },
         controller: controller,
         children: [
-          Container(height: double.infinity, color: Colors.red),
+          const InputScreen(),
           Container(height: double.infinity, color: Colors.green),
-          Container(height: double.infinity, color: Colors.black),
+          const Balance(),
           Container(height: double.infinity, color: Colors.blue),
         ],
       ),
