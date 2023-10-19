@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pdp_project/data/constants/app_icons.dart';
 import 'package:pdp_project/presentation/input_screen/widget/custom_card.dart';
 
 class InputScreen extends StatefulWidget {
@@ -19,12 +20,12 @@ class _InputScreenState extends State<InputScreen> {
   ];
 
   List images = [
-    const AssetImage("assets/icons/food.png"),
-    const AssetImage("assets/icons/konselyar.png"),
-    const AssetImage("assets/icons/electronic.png"),
-    const AssetImage("assets/icons/Xoztavar.png"),
-    const AssetImage("assets/icons/Stroyka.png"),
-    const AssetImage("assets/icons/calendar_svgrepo.png")
+    AppIcons.cardIcons_1,
+    AppIcons.cardIcons_2,
+    AppIcons.cardIcons_3,
+    AppIcons.cardIcons_4,
+    AppIcons.cardIcons_5,
+    AppIcons.cardIcons_6,
   ];
 
   @override
