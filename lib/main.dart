@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:pdp_project/presentation/page_builder/page_builder.dart';
 
 void main() {
   runApp(const App());
@@ -10,6 +12,9 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp();
+    return const  MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: PageBuilder(),
+    );
   }
 }
