@@ -11,9 +11,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_native_splash: ^2.3.3  
   cupertino_icons: ^1.0.2
   http: ^1.1.0
+
+flutter_native_splash:
+  background_image: assets/images/start.png
+  android: true
+  ios: true
+
 
 dev_dependencies:
   flutter_test:
