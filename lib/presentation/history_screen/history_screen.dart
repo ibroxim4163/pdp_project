@@ -16,7 +16,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       body: SafeArea(
         child: ListView(
-          children: [
+
+
+          children:const [
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.center,
             //   children: [
