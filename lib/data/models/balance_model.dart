@@ -43,5 +43,7 @@ class BalanceModel {
       endDate: DateTime.tryParse(map['end_date'] as String)??DateTime.now(),
     );
   }
-
 }
+
+
+

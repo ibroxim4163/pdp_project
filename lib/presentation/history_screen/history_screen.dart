@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../data/constants/app_colors.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -86,7 +85,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
             //     ),
             //   ),
             // ),
-         
           ],
         ),
       ),
