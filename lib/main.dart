@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pdp_project/presentation/check_screen.dart';
 import 'package:pdp_project/presentation/history_screen/history_screen.dart';
 
 void main() {
@@ -12,7 +13,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HistoryScreen(),
+      home: CheckScreen(),
     );
   }
 }
