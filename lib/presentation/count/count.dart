@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:pdp_project/presentation/balance_screen/widgets/submit.dart';
-import 'package:pdp_project/presentation/balance_screen/widgets/time.dart';
-class Balance extends StatefulWidget {
-  const Balance({Key? key}) : super(key: key);
+import 'package:pdp_project/presentation/count/widgets/filyal.dart';
+import 'package:pdp_project/presentation/count/widgets/price.dart';
+
+class Count extends StatefulWidget {
+  const Count({Key? key}) : super(key: key);
 
   @override
-  State<Balance> createState() => _BalanceState();
+  State<Count> createState() => _CountState();
 }
 
-class _BalanceState extends State<Balance> {
-  late final PageController controller;
-  @override
-  void initState() {
-   controller=PageController();
-    super.initState();
-  }
+class _CountState extends State<Count> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,11 +58,9 @@ class _BalanceState extends State<Balance> {
                     ],
                   ),
                   child: PageView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: controller,
-                    children:  [
-                      Time(controller: controller),
-                      Submit(controller: controller),
+                    children: const [
+                      Price(),
+                      Filyal(),
                     ],
                   ),
                 ),
@@ -79,4 +72,3 @@ class _BalanceState extends State<Balance> {
     );
   }
 }
-
