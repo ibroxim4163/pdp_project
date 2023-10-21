@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pdp_project/presentation/widgets/sections.dart';
 
 import '../../data/constants/app_colors.dart';
+import '../widgets/sections.dart';
 
 
 class HistoryScreen extends StatefulWidget {
@@ -20,7 +20,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, 70),
         child: SafeArea(
-          child: HistorySections(
+          child: SwitchSection(
+            width: MediaQuery.of(context).size.width * 0.5 - 20,
             isSelected: isSelected,
             firstText: "Input",
             secondText: "Output",

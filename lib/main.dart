@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'presentation/page_builder/page_builder.dart';
+import 'package:pdp_project/presentation/output_screen/output_screen.dart';
+import 'package:pdp_project/presentation/sign_in_page/sign_in_screen.dart';
 
 
 void main() {
@@ -14,7 +14,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext  context) {
     return const MaterialApp(
-      home: PageBuilder(),
+      debugShowCheckedModeBanner: false,
+      home: SignIn(),
     );
   }
 }

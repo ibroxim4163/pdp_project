@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pdp_project/data/constants/app_icons.dart';
 import 'package:pdp_project/presentation/input_screen/widget/custom_card.dart';
+import 'package:pdp_project/presentation/output_screen/output_screen.dart';
 
 class InputScreen extends StatefulWidget {
   const InputScreen({super.key});
@@ -44,6 +45,14 @@ class _InputScreenState extends State<InputScreen> {
             ),
             itemBuilder: (context, index) {
               return CustomCard(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const OutPutScreen(),
+                    ),
+                  );
+                },
                 images: images[index],
                 text: text[index],
               );

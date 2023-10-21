@@ -4,22 +4,24 @@ import 'package:pdp_project/data/services/api_service.dart';
 
 import '../../data/constants/app_colors.dart';
 
-class HistorySections extends StatefulWidget {
+class SwitchSection extends StatefulWidget {
   final String firstText;
   final String secondText;
   final ValueNotifier<bool> isSelected;
-  const HistorySections({
+  final double width;
+  const SwitchSection({
     required this.isSelected,
     required this.firstText,
     required this.secondText,
     super.key,
+    required this.width,
   });
 
   @override
-  State<HistorySections> createState() => _HistorySectionsState();
+  State<SwitchSection> createState() => _HistorySectionsState();
 }
 
-class _HistorySectionsState extends State<HistorySections> {
+class _HistorySectionsState extends State<SwitchSection> {
   late final ApiRepository apiRepository;
 
   @override
@@ -60,11 +62,7 @@ class _HistorySectionsState extends State<HistorySections> {
               style: TextButton.styleFrom(
                 foregroundColor: AppColors.mainColor,
               ),
-              onPressed: () {
-                setState(() {
-                  widget.isSelected.value = false;
-                });
-              },
+              onPressed: () {},
               child: Text(
                 widget.secondText,
                 style: TextStyle(
@@ -87,7 +85,7 @@ class _HistorySectionsState extends State<HistorySections> {
               children: [
                 SizedBox(
                   height: 3,
-                  width: MediaQuery.sizeOf(context).width * .5 - 20,
+                  width: widget.width,
                   child: ColoredBox(
                     color: widget.isSelected.value
                         ? AppColors.mainColor
@@ -96,7 +94,7 @@ class _HistorySectionsState extends State<HistorySections> {
                 ),
                 SizedBox(
                   height: 3,
-                  width: MediaQuery.sizeOf(context).width * .5 - 20,
+                  width: widget.width,
                   child: ColoredBox(
                     color: widget.isSelected.value
                         ? AppColors.greyColor
