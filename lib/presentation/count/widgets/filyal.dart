@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:pdp_project/presentation/widgets/app_buttons.dart';
+import 'package:pdp_project/presentation/widgets/custom_text_field.dart';
 
-import '../../../data/constants/app_colors.dart';
+enum Filials{
+  pdpCollege("pdp_college","PDP College"),
+  pdpUniversity("pdp_university","PDP University"),
+  pdpJunior("pdp_junior","PDP Junior"),
+  pdpSchool("pdp_school","PDP School"),
+  pdpAcademy("pdp_academy","PDP Academy");
+  final String backend;
+  final String frontend;
+  const Filials(this.backend,this.frontend);
+}
 
 
 class Filyal extends StatefulWidget {
@@ -11,69 +22,64 @@ class Filyal extends StatefulWidget {
 }
 
 class _FilyalState extends State<Filyal> {
-  final counts = TextEditingController();
-  final filyal = TextEditingController();
+
+  late final TextEditingController countController;
+
+
+  @override
+  void initState() {
+    countController = TextEditingController();
+    super.initState();
+  }
+  @override
+  void dispose() {
+   countController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          const Text(
-            "Tualet bumaga elma soft",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            "Tualet bumaga elma soft touch (8 sht)",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Colors.black,
+                  fontFamily: "Inter-Regular",
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ),
+        const SizedBox(height: 15),
+        CustomTextField(controller: countController, text: "Count"),
+        const SizedBox(height: 6),
+        Padding(
+          padding: const EdgeInsets.only(left: 10,right: 10),
+          child: Card(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(25),
+              )
+            ),
+            child:  ExpansionTile(
+              title: Text(Filials.pdpAcademy.frontend),
+              children: [
+                ListTile(title: Text(Filials.pdpJunior.frontend)),
+                ListTile(title: Text(Filials.pdpUniversity.frontend)),
+                ListTile(title: Text(Filials.pdpSchool.frontend)),
+                ListTile(title: Text(Filials.pdpCollege.frontend))
+              ],
             ),
           ),
-          const SizedBox(height: 35),
-          TextFormField(
-            controller: counts,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              helperText: "Count",
-            ),
-          ),
-          const SizedBox(height: 15),
-          TextFormField(
-            controller: filyal,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              helperText: "Filyal",
-            ),
-          ),
-          const Spacer(),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.mainColor,
-                fixedSize: const Size(350, 60),
-                shape: const StadiumBorder()),
-            onPressed: () {},
-            child: const Text("Submit"),
-          ),
-          const SizedBox(height: 20),
-          OutlinedButton(
-            style: OutlinedButton.styleFrom(
-                side: const BorderSide(width: 1.5, color: AppColors.mainColor),
-                fixedSize: const Size(350, 60),
-                shape: const StadiumBorder()),
-            onPressed: () {},
-            child: const Text(
-              "Cancel",
-              style: TextStyle(
-                color: Colors.red,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+        const Spacer(),
+        CustomButton(onPressed: () {}),
+        const SizedBox(height: 12),
+      ],
     );
   }
 }

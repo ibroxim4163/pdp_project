@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
-import '../../../data/constants/app_colors.dart';
+import 'package:pdp_project/presentation/widgets/app_buttons.dart';
+import 'package:pdp_project/presentation/widgets/custom_text_field.dart';
 
 
 class Price extends StatefulWidget {
@@ -11,8 +11,22 @@ class Price extends StatefulWidget {
 }
 
 class _PriceState extends State<Price> {
-  final count = TextEditingController();
-  final price = TextEditingController();
+  late final TextEditingController countController;
+  late final TextEditingController priceController;
+
+  @override
+  void initState() {
+    countController = TextEditingController();
+    priceController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    countController.dispose();
+    priceController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,97 +36,21 @@ class _PriceState extends State<Price> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 10),
-          Center(
-            child: Text(
-              "Tualet bumaga elma soft",
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+          Text(
+            "Tualet bumaga elma soft touch (8 sht)",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   color: Colors.black,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: "Inter-Regular"),
-            ),
+                  fontFamily: "Inter-Regular",
+                  fontWeight: FontWeight.w900,
+                ),
           ),
           const SizedBox(height: 15),
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text(
-              "Count",
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: Colors.black,
-                fontFamily: "Inter-Regular",
-              ),
-            ),
-          ),
-          const SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: TextFormField(
-              controller: count,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                isDense: true,
-              ),
-            ),
-          ),
+          CustomTextField(controller: countController, text: "Count"),
           const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text(
-              "Price",
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Colors.black,
-                    fontFamily: "Inter-Regular",
-                  ),
-            ),
-          ),
-          const SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.only(left: 13, right: 13),
-            child: TextFormField(
-              controller: price,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                isDense: true,
-              ),
-            ),
-          ),
+          CustomTextField(controller: priceController, text: "Price"),
           const Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.mainColor,
-                  fixedSize: const Size(340, 45),
-                  shape: const StadiumBorder()),
-              onPressed: () {},
-              child: const Text("Submit"),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                  side: const BorderSide(width: 1.5, color: AppColors.mainColor),
-                  fixedSize: const Size(320, 45),
-                  shape: const StadiumBorder()),
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  color: Colors.red,
-                ),
-              ),
-            ),
-          ),
+          CustomButton(onPressed: () {}),
           const SizedBox(height: 7),
         ],
       ),

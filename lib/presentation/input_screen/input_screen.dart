@@ -30,30 +30,34 @@ class _InputScreenState extends State<InputScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: CustomCategories(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => DetailScreen(controller: controller, onPressed: (){
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      shape: const RoundedRectangleBorder(
+              builder: (context) => DetailScreen(
+                controller: controller,
+                onPressed: () {
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(
                             Radius.circular(30),
-                          )
-                      ),
-                      child: SizedBox(
-                        height: size.height * 0.5,
-                        child: const  Price(),
-                      ),
-                    );
-                  },
-                );
-              },),
+                          ),
+                        ),
+                        child: SizedBox(
+                          height: size.height * 0.5,
+                          child: const Price(),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           );
         },

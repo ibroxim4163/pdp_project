@@ -3,18 +3,6 @@ import 'package:pdp_project/presentation/count/widgets/filyal.dart';
 import 'package:pdp_project/presentation/detailes_screen/details.dart';
 import 'package:pdp_project/presentation/widgets/categories.dart';
 
-enum Filials{
-  pdpCollege("pdp_college","PDP College"),
-  pdpUniversity("pdp_university","PDP University"),
-  pdpJunior("pdp_junior","PDP Junior"),
-  pdpSchool("pdp_school","PDP School"),
-  pdpAcademy("pdp_academy","PDP Academy");
-  final String backend;
-  final String frontend;
-  const Filials(this.backend,this.frontend);
-}
-
-
 
 class OutputScreen extends StatefulWidget {
   const OutputScreen({super.key});
@@ -42,6 +30,7 @@ class _OutputScreenState extends State<OutputScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: CustomCategories(
         onTap: () {
           Navigator.push(

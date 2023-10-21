@@ -1,13 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:pdp_project/presentation/sign_in_page/widget/custom_text_field.dart';
+import 'package:pdp_project/presentation/page_builder/page_builder.dart';
+import 'package:pdp_project/presentation/widgets/custom_text_field.dart';
 import 'package:pdp_project/presentation/widgets/sections.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   const SignIn({super.key});
 
   @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  final valueNotifier = ValueNotifier(true);
+  late final TextEditingController userController;
+  late final TextEditingController passwordController;
+
+  @override
+  void initState() {
+    userController = TextEditingController();
+    passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    userController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final valueNotifier = ValueNotifier(true);
+    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -23,7 +46,7 @@ class SignIn extends StatelessWidget {
             Align(
               alignment: const Alignment(0, 1),
               child: Container(
-                height: 500,
+                height: size.height * 0.659,
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -39,7 +62,7 @@ class SignIn extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
                 child: Container(
-                  height: 450,
+                  height: size.height * 0.593,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(
@@ -60,13 +83,55 @@ class SignIn extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SwitchSection(
-                        width: MediaQuery.of(context).size.width/2-50,
+                        width: MediaQuery.of(context).size.width / 2 - 50,
                         isSelected: valueNotifier,
                         firstText: "Sign In",
                         secondText: "Sign Up",
                       ),
-                       const SizedBox(height: 40),
-                       const CustomTextField(),
+                      SizedBox(height: size.height * 0.052),
+                      CustomTextField(
+                        controller: userController,
+                        text: "Username",
+                        hintText: "diordev",
+                      ),
+                      const SizedBox(height: 30),
+                      CustomTextField(
+                        controller: passwordController,
+                        text: "Password",
+                        hintText: "password",
+                        helperText: "Forgot password?",
+                      ),
+                      SizedBox(height: size.height * 0.026),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15, right: 15),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PageBuilder(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF05AF70),
+                            shape: const StadiumBorder(),
+                            fixedSize:
+                                Size(size.width * 0.944, size.height * 0.069),
+                          ),
+                          child: Text(
+                            "Sign In",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Inter-Regular",
+                                ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),

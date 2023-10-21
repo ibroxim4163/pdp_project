@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pdp_project/data/constants/app_icons.dart';
-
-import 'package:pdp_project/presentation/detailes_screen/widget/custom_text_field.dart';
+import 'package:pdp_project/presentation/detailes_screen/widget/custom_dialog.dart';
 
 import 'package:pdp_project/presentation/widgets/product_data.dart';
 
@@ -84,35 +83,7 @@ class _OutPutScreenState extends State<DetailScreen> {
                   ),
                   widget.controller.text.isEmpty
                       ? IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return const Dialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                    Radius.circular(35),
-                                  )),
-                                  child: SizedBox(
-                                    height: 600,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        CustomField(text: "Category"),
-                                        CustomField(text: "Name"),
-                                        CustomField(text: "Count"),
-                                        CustomField(text: "Unit"),
-                                        CustomField(text: "Price"),
-
-                                        /// TODO
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                          onPressed: () => showCustomDetailsDialog(context),
                           icon: const Icon(
                             Icons.add_circle_outline_sharp,
                             color: Color(0xFF05B06E),
