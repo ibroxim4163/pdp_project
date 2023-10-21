@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/constants/app_colors.dart';
-import '../../output_screen/output_screen.dart';
+
 
 class Filyal extends StatefulWidget {
   const Filyal({Key? key}) : super(key: key);
@@ -64,14 +64,7 @@ class _FilyalState extends State<Filyal> {
                 side: const BorderSide(width: 1.5, color: AppColors.mainColor),
                 fixedSize: const Size(350, 60),
                 shape: const StadiumBorder()),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (builder) => const OutPutScreen(),
-                ),
-              );
-            },
+            onPressed: () {},
             child: const Text(
               "Cancel",
               style: TextStyle(

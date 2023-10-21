@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:pdp_project/presentation/page_builder/page_builder.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({super.key});
@@ -17,11 +17,11 @@ class CustomTextField extends StatelessWidget {
             child: Text(
               "Username",
               style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-                fontSize: 11,
-                fontFamily: "Inter-Regular",
-              ),
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                    fontSize: 11,
+                    fontFamily: "Inter-Regular",
+                  ),
             ),
           ),
           const SizedBox(height: 10),
@@ -47,11 +47,11 @@ class CustomTextField extends StatelessWidget {
             child: Text(
               "Password",
               style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-                fontSize: 11,
-                fontFamily: "Inter-Regular",
-              ),
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                    fontSize: 11,
+                    fontFamily: "Inter-Regular",
+                  ),
             ),
           ),
           const SizedBox(height: 10),
@@ -67,7 +67,7 @@ class CustomTextField extends StatelessWidget {
               counterStyle: TextStyle(
                 color: Color(0xFF05AF70),
               ),
-              hintText: "**************",
+              hintText: "password",
               hintStyle: TextStyle(
                 color: Color(0xFFA69090),
                 fontSize: 12,
@@ -82,18 +82,24 @@ class CustomTextField extends StatelessWidget {
                 fixedSize: const Size(280, 55),
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(26),
-                    )
-                ),
+                  Radius.circular(26),
+                )),
                 backgroundColor: const Color(0xFF05AF70),
               ),
-              onPressed: (){},
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PageBuilder(),
+                  ),
+                );
+              },
               child: Text(
                 "Sign In",
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
               ),
             ),
           )
