@@ -21,12 +21,13 @@ class APIService {
   Future<String> request(
     String requestPath, {
     Method method = Method.get,
-    Map<String, List<String>> queryParametersAll = const {},
+   String queryParametersAll = "",
     Map<String, String> headers = const {},
-    Map<String, String> body = const {},
+    Object body="",
+    // Map<String, String> body = const {},
   }) async {
-    final params = _queryToString(queryParametersAll);
-    final uri = Uri.parse("$requestPath$params");
+    // final params = _queryToString(queryParametersAll);
+    final uri = Uri.parse("$requestPath$queryParametersAll");
 
     try {
       Response response = await switch (method) {
@@ -76,7 +77,7 @@ class APIService {
 
   String _queryToString(Map<String, List<String>> query) => query.isEmpty
       ? ""
-      : "?${query.entries.map(
+      : "?search=${query.entries.map(
             (e) => e.value.map((v) => "${e.key}=$v").toList(),
           ).map<String>(
             (e) => e.join("&"),

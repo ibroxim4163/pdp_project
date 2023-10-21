@@ -31,11 +31,7 @@ class _MainPagesState extends State<PageBuilder> {
   }
 
   void onPageChanged(int value) {
-    controller.animateToPage(
-      value,
-      duration: const Duration(microseconds: 400),
-      curve: Curves.linear,
-    );
+    controller.jumpToPage(value);
   }
 
   @override

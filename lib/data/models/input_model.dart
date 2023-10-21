@@ -33,7 +33,7 @@ class InputModel {
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, product: $product, count: $count, price: $price, date: $date)';
+    return 'InputModel(id: $id, product: $product, count: $count, price: $price, date: $date)';
   }
 
   @override
@@ -63,7 +63,7 @@ class InputModel {
       'product': product,
       'count': count,
       'price': price,
-      'date': date.millisecondsSinceEpoch,
+      'date': date.toIso8601String(),
     };
   }
 
@@ -73,7 +73,7 @@ class InputModel {
       product: map['product'] as int,
       count: map['count'] as int,
       price: map['price'] as String,
-      date: DateTime.fromMillisecondsSinceEpoch(map['date'] as int),
+      date: DateTime.tryParse(map['date'] as String) ??DateTime.now(),
     );
   }
 
