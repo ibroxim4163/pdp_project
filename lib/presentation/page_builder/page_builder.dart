@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pdp_project/presentation/history_screen/history_screen.dart';
+import 'package:pdp_project/presentation/output_screen/output_screen.dart';
 
 import '../balance_screen/balance_screen.dart';
+
 import '../input_screen/input_screen.dart';
-import '../output_screen/output_screen.dart';
 import 'custom_bottom_app_bar.dart';
 
 class PageBuilder extends StatefulWidget {
@@ -52,7 +53,7 @@ class _MainPagesState extends State<PageBuilder> {
         controller: controller,
         children: const [
           InputScreen(),
-          OutPutScreen(),
+          OutputScreen(),
           Balance(),
           HistoryScreen(),
         ],
