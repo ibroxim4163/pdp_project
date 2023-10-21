@@ -45,7 +45,6 @@ class APIService {
             StackTrace.current,
           ),
         >= 200 && < 300 => response.body,
-        >= 200 && < 300 => response.body,
         >= 300 && 400 => throw Error.throwWithStackTrace(
             "${response.reasonPhrase}",
             StackTrace.current,
@@ -75,11 +74,11 @@ class APIService {
     }
   }
 
-  String _queryToString(Map<String, List<String>> query) => query.isEmpty
-      ? ""
-      : "?search=${query.entries.map(
-            (e) => e.value.map((v) => "${e.key}=$v").toList(),
-          ).map<String>(
-            (e) => e.join("&"),
-          ).join("&")}";
+  // String _queryToString(Map<String, List<String>> query) => query.isEmpty
+  //     ? ""
+  //     : "?search=${query.entries.map(
+  //           (e) => e.value.map((v) => "${e.key}=$v").toList(),
+  //         ).map<String>(
+  //           (e) => e.join("&"),
+  //         ).join("&")}";
 }

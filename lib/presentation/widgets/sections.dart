@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pdp_project/data/repositories/api_repository.dart';
 import 'package:pdp_project/data/services/api_service.dart';
+import 'package:pdp_project/presentation/input_screen/models/post_product_model.dart';
 
 import '../../data/constants/app_colors.dart';
 
@@ -44,7 +45,14 @@ class _HistorySectionsState extends State<SwitchSection> {
               onPressed: () {
                 setState(() {
                   widget.isSelected.value = true;
-                  apiRepository.getOutputs();
+                  const PostProductModel productModel = PostProductModel(
+                    category: 1,
+                    name: "telefon",
+                    count: 10,
+                    unit: Unit.dona,
+                    price: "99.5",
+                  );
+                  apiRepository.postProduct(productModel);
                 });
               },
               child: Text(
