@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:pdp_project/data/constants/api_constants.dart';
-import 'package:pdp_project/data/models/input_model.dart';
-import 'package:pdp_project/data/models/output_model.dart';
+import 'package:pdp_project/presentation/input_screen/models/input_model.dart';
+import 'package:pdp_project/presentation/input_screen/models/post_product_model.dart';
+import 'package:pdp_project/presentation/output_screen/models/output_model.dart';
+import 'package:pdp_project/presentation/output_screen/models/post_output_model.dart';
+import 'package:pdp_project/presentation/input_screen/models/post_input_model.dart';
 import 'package:pdp_project/data/models/product_model.dart';
 import 'package:pdp_project/data/models/refresh_token_model.dart';
 import 'package:pdp_project/data/models/token_model.dart';
@@ -27,9 +30,13 @@ abstract class ApiRepository {
 
   Future<void> deleteInput(int id);
 
-  //post input
-  //post output
-  //post product
+  Future<PostedInputModel> postInput(
+    Map<String, Object?> json,
+  );
+
+  Future<PostedOutputModel> postOutput(Map<String, Object?> json);
+
+  Future<ProductModel> postProduct(PostProductModel productModel);
   Future<String> refreshToken();
   Future<void> deleteOutput(int id);
 }
@@ -242,9 +249,76 @@ class ApiRepositoryImp implements ApiRepository {
       body: jsonEncode(body),
       headers: header,
     );
-    RefreshTokenModel refreshToken = RefreshTokenModel.fromMap(jsonDecode(response));
+    RefreshTokenModel refreshToken =
+        RefreshTokenModel.fromMap(jsonDecode(response));
     print(refreshToken);
 
     return refreshToken.access;
+  }
+
+  @override
+  Future<PostedInputModel> postInput(Map<String, Object?> json) async {
+    final token = await getToken();
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.inputPostPath,
+      method: Method.post,
+      body: jsonEncode(json),
+      headers: header,
+    );
+
+    final PostedInputModel postedProduct =
+        PostedInputModel.fromJson(jsonDecode(response));
+    print(postedProduct);
+
+    return postedProduct;
+  }
+
+  @override
+  Future<PostedOutputModel> postOutput(Map<String, Object?> json) async {
+    final token = await getToken();
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.postOutputPath,
+      method: Method.post,
+      body: jsonEncode(json),
+      headers: header,
+    );
+
+    final PostedOutputModel postedProduct =
+        PostedOutputModel.fromJson(jsonDecode(response));
+    print(postedProduct);
+
+    return postedProduct;
+  }
+
+  @override
+  Future<ProductModel> postProduct(PostProductModel productModel) async {
+    final token = await getToken();
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.createProductPath,
+      method: Method.post,
+      body: jsonEncode(productModel.toJson()),
+      headers: header,
+    );
+
+    final ProductModel product = ProductModel.fromJson(jsonDecode(response));
+
+    print(product);
+
+    return product;
   }
 }
