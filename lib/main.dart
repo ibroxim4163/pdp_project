@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pdp_project/presentation/balance_screen/balance_screen.dart';
+
+import 'presentation/page_builder/page_builder.dart';
 
 void main() {
   runApp(const App());
@@ -11,7 +12,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext  context) {
     return const MaterialApp(
-      home: Balance(),
+      home: PageBuilder(),
     );
   }
 }

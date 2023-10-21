@@ -1,5 +1,5 @@
 abstract class ApiConst {
-  static const baseUrl = "docs.bionix.uz/api";
+  static const baseUrl = "https://docs.bionix.uz/api";
 
   static const balancePath = "$baseUrl/balance";
 
@@ -11,7 +11,9 @@ abstract class ApiConst {
 
   static const inputPostPath = "$baseUrl/input";
 
-  static String deleteInputIdPath(int id) => "$baseUrl/input/id";
+  static String deleteInputIdPath(int id) => "$baseUrl/input/$id";
+  
+  static String deleteOutputPath(int id) => "$baseUrl/output/$id";
 
   static const getOutputPath = "$baseUrl/output";
 
@@ -19,16 +21,9 @@ abstract class ApiConst {
 
   static const createProductPath = "$baseUrl/product";
 
-  //TODO search
+  static const searchPath = "$baseUrl/search?search=";
 
   static const postToken = "$baseUrl/token/";
 
   static const postRefreshToken = "$baseUrl/token/refresh/";
-
-  Map<String, String> tokenHeader() => {
-    "Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3NzgyNjg1LCJpYXQiOjE2OTc3ODIzODUsImp0aSI6IjZjMzU2ZGNiY2UyYTQ5NzM4ZmIyZjE3YmI4Y2QwYjAwIiwidXNlcl9pZCI6MX0.p_6MieCnLEzeXCSbbtQ9H3jNH62cO4lcnZz5tH8c3As",
-    "Postman-Token":"<calculated when request is sent>",
-    "Content-Type":"",
-
-  };
 }

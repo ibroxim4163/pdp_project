@@ -1,9 +1,37 @@
 import 'dart:convert';
-import 'package:pdp_project/data/models/category_model.dart';
-import 'package:pdp_project/data/services/api_service.dart';
+
+import 'package:pdp_project/data/constants/api_constants.dart';
+import 'package:pdp_project/data/models/input_model.dart';
+import 'package:pdp_project/data/models/output_model.dart';
+import 'package:pdp_project/data/models/product_model.dart';
+import 'package:pdp_project/data/models/refresh_token_model.dart';
+import 'package:pdp_project/data/models/token_model.dart';
+
+import '../models/category_model.dart';
+import '../services/api_service.dart';
 
 abstract class ApiRepository {
+  Future<TokenModel> getToken();
+
   Future<List<CategoryModel>> getCategories();
+
+  Future<List<ProductModel>> getProducts(int id);
+
+  Future<List<InputModel>> getInputs();
+
+  Future<List<OutputModel>> getOutputs();
+
+  Future<List<ProductModel>> search(String text);
+
+  Future<void> postBalance(Map<String, String> dates);
+
+  Future<void> deleteInput(int id);
+
+  //post input
+  //post output
+  //post product
+  Future<String> refreshToken();
+  Future<void> deleteOutput(int id);
 }
 
 class ApiRepositoryImp implements ApiRepository {
@@ -11,20 +39,212 @@ class ApiRepositoryImp implements ApiRepository {
   const ApiRepositoryImp(this.apiService);
 
   @override
-  Future<List<CategoryModel>> getCategories() async {
-    const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjk3Nzg0NjI3LCJpYXQiOjE2OTc3ODQzMjcsImp0aSI6ImE0MzQ4ZmMzMWQxODQ4OWJhMzM5M2E1MGRmZjZjY2ZkIiwidXNlcl9pZCI6MX0.Umlq5Uoyl0ND_VQLbhQhWfBLoKq6KFWtXYwItBIILCE.Umlq5Uoyl0ND_VQLbhQhWfBLoKq6KFWtXYwItBIILCE";
+  Future<TokenModel> getToken() async {
     final header = {
-      "Authorization": "$token",
       "Content-Type": "application/json",
     };
-    String response =
-        await apiService.request("https://docs.bionix.uz/api/category", headers: header);
-    List<CategoryModel> categories =
-        List<Map<String, Object?>>.from(jsonDecode(response))
-            .map(CategoryModel.fromJson)
-            .toList();
+    Map<String, String> body = {
+      "username": "admin",
+      "password": "1",
+    };
+
+    String response = await apiService.request(
+      ApiConst.postToken,
+      headers: header,
+      body: jsonEncode(body),
+      method: Method.post,
+    );
+
+    final TokenModel token = TokenModel.fromMap(jsonDecode(response));
+
+    return token;
+  }
+
+  @override
+  Future<List<CategoryModel>> getCategories() async {
+    final token = await getToken();
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.categoryPath,
+      headers: header,
+    );
+
+    final categories = List<Map<String, Object?>>.from(jsonDecode(response))
+        .map(CategoryModel.fromJson)
+        .toList();
+
     print(categories);
+
     return categories;
+  }
+
+  @override
+  Future<List<ProductModel>> getProducts(int id) async {
+    final token = await getToken();
+
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.categoryIdPath(id),
+      headers: header,
+    );
+    final products = List<Map<String, Object?>>.from(jsonDecode(response))
+        .map(ProductModel.fromJson)
+        .toList();
+
+    print(products);
+
+    return products;
+  }
+
+  @override
+  Future<List<InputModel>> getInputs() async {
+    final token = await getToken();
+
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.inputGetPath,
+      headers: header,
+    );
+
+    final List<InputModel> inputs =
+        List<Map<String, Object?>>.from(jsonDecode(response))
+            .map((InputModel.fromJson))
+            .toList();
+
+    print(inputs);
+
+    return inputs;
+  }
+
+  @override
+  Future<List<OutputModel>> getOutputs() async {
+    final token = await getToken();
+
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.getOutputPath,
+      headers: header,
+    );
+
+    final List<OutputModel> outputs =
+        List<Map<String, Object?>>.from(jsonDecode(response))
+            .map((OutputModel.fromJson))
+            .toList();
+
+    print(outputs);
+
+    return outputs;
+  }
+
+  @override
+  Future<List<ProductModel>> search(String text) async {
+    final token = await getToken();
+
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.searchPath,
+      queryParametersAll: text,
+      headers: header,
+    );
+
+    final products = List<Map<String, Object?>>.from(jsonDecode(response))
+        .map(ProductModel.fromJson)
+        .toList();
+
+    return products;
+  }
+
+  @override
+  Future<void> postBalance(Map<String, String> dates) async {
+    final token = await getToken();
+
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+
+    final response = await apiService.request(
+      ApiConst.balancePath,
+      body: jsonEncode(dates),
+      headers: header,
+      method: Method.post,
+    );
+
+    print(response);
+  }
+
+  @override
+  Future<void> deleteInput(int id) async {
+    final token = await getToken();
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+    final response = await apiService.request(
+      ApiConst.deleteInputIdPath(id),
+      headers: header,
+      method: Method.delete,
+    );
+
+    print("response=$response");
+  }
+
+  @override
+  Future<void> deleteOutput(int id) async {
+    final token = await getToken();
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+    final response = await apiService.request(
+      ApiConst.deleteOutputPath(id),
+      headers: header,
+      method: Method.delete,
+    );
+
+    print("response=$response");
+  }
+
+  @override
+  Future<String> refreshToken() async {
+    final token = await getToken();
+    final header = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer ${token.access}",
+    };
+    final body = {
+      "refresh": token.refresh,
+    };
+
+    final response = await apiService.request(
+      ApiConst.postRefreshToken,
+      method: Method.post,
+      body: jsonEncode(body),
+      headers: header,
+    );
+    RefreshTokenModel refreshToken = RefreshTokenModel.fromMap(jsonDecode(response));
+    print(refreshToken);
+
+    return refreshToken.access;
   }
 }
