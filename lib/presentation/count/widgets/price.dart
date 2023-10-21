@@ -1,21 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:pdp_project/data/constants/app_colors.dart';
 
-class Time extends StatefulWidget {
-  final PageController controller;
-  const Time({
-    required this.controller,
-    super.key,
-  });
+import '../../../data/constants/app_colors.dart';
+import '../../output_screen/output_screen.dart';
+
+class Price extends StatefulWidget {
+  const Price({Key? key}) : super(key: key);
 
   @override
-  State<Time> createState() => _TimeState();
+  State<Price> createState() => _PriceState();
 }
 
-class _TimeState extends State<Time> {
-  final from = TextEditingController();
-  final until = TextEditingController();
+class _PriceState extends State<Price> {
+  final count = TextEditingController();
+  final price = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -24,36 +22,32 @@ class _TimeState extends State<Time> {
       child: Column(
         children: [
           const Text(
-            "Balance",
+            "Tualet bumaga elma soft",
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              fontSize: 40,
+              fontSize: 20,
             ),
           ),
           const SizedBox(height: 35),
           TextFormField(
-            inputFormatters: [MaskTextInputFormatter(mask: "##-##-####")],
-            controller: from,
+            controller: count,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
-              border: OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
-              helperText: "From",
-              hintText: "dd-mm-yyyy",
+              helperText: "Count",
             ),
           ),
           const SizedBox(height: 15),
           TextFormField(
-            inputFormatters: [MaskTextInputFormatter(mask: "##-##-####")],
-            controller: until,
+            controller: price,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
-              border: OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
-              helperText: "Until",
-              hintText: "dd-mm-yyyy",
+              helperText: "Price",
             ),
           ),
           const Spacer(),
@@ -62,23 +56,22 @@ class _TimeState extends State<Time> {
                 backgroundColor: AppColors.mainColor,
                 fixedSize: const Size(350, 60),
                 shape: const StadiumBorder()),
-            onPressed: () {
-              widget.controller.jumpToPage(1);
-            },
+            onPressed: () {},
             child: const Text("Submit"),
           ),
           const SizedBox(height: 20),
           OutlinedButton(
             style: OutlinedButton.styleFrom(
-                side: const BorderSide(
-                  width: 1.5,
-                  color: AppColors.mainColor,
-                ),
+                side: const BorderSide(width: 1.5, color: AppColors.mainColor),
                 fixedSize: const Size(350, 60),
                 shape: const StadiumBorder()),
             onPressed: () {
-              from.text = "";
-              until.text = "";
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (builder) => const OutPutScreen(),
+                ),
+              );
             },
             child: const Text(
               "Cancel",
