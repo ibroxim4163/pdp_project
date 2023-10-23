@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:pdp_project/presentation/sign_in_page/sign_in_screen.dart';
+import 'package:pdp_project/src/feature/sign_in/sign_in_screen.dart';
 
 void main() => runApp(const App());
 
