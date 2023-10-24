@@ -47,3 +47,15 @@ class InputPageSearchEvent extends InputPageEvent {
   @override
   List<Object?> get props => [text];
 }
+
+class DeleteInputEvent extends InputPageEvent {
+  final int inputId;
+  final int categoryId;
+  const DeleteInputEvent({
+    required this.categoryId,
+    required this.inputId,
+  });
+
+  @override
+  List<Object?> get props => [inputId,categoryId];
+}

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:pdp_project/src/feature/widgets/app_buttons.dart';
-import 'package:pdp_project/src/feature/widgets/custom_text_field.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../widgets/app_buttons.dart';
+import '../../widgets/custom_text_field.dart';
+import '../bloc/input_bloc.dart';
+import '../models/post_input_model.dart';
 
 class InputDialog extends StatefulWidget {
   final String productName;
+  final int id;
   const InputDialog({
     required this.productName,
+    required this.id,
     super.key,
   });
 
@@ -52,6 +58,9 @@ class _InputDialogState extends State<InputDialog> {
           ),
           const SizedBox(height: 15),
           CustomTextField(
+            inputFormatter: FilteringTextInputFormatter.allow(
+              RegExp(r"[0-9]"),
+            ),
             controller: countController,
             text: "Count",
           ),
@@ -63,7 +72,14 @@ class _InputDialogState extends State<InputDialog> {
           const Spacer(),
           CustomButton(
             onCancelled: () => Navigator.pop(context),
-            onSubmitted: () {},
+            onSubmitted: () {
+              PostInputModel inputModel = PostInputModel(
+                product: widget.id,
+                count: int.tryParse(countController.text) ?? 0,
+                price: priceController.text,
+              );
+              context.read<InputBloc>().add(PostInputEvent(inputModel));
+            },
           ),
           const SizedBox(height: 7),
         ],

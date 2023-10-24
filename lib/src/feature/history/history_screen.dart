@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../common/constants/app_colors.dart';
 import '../widgets/custom_divider.dart';
+import '../widgets/products_shimmer.dart';
 import '../widgets/switch_section.dart';
+import 'bloc/history_bloc.dart';
 import 'widgets/custom_history_products.dart';
 
 class HistoryScreen extends StatefulWidget {
@@ -34,64 +36,66 @@ class _HistoryScreenState extends State<HistoryScreen> {
         valueListenable: isSelected,
         builder: (context, value, child) {
           if (value) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 10, right: 10),
-              child: ListView.separated(
-                physics: const BouncingScrollPhysics(),
-                separatorBuilder: (context, index) {
+            return BlocBuilder<HistoryBloc, HistoryState>(
+              builder: (context, state) {
+                if (state.status == HistoryStatus.loading) {
+                  return const ProductsShimmer();
+                } else {
                   return Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 1.5,
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: AppColors.dividerColor,
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.dividerShadowColor,
-                            )
-                          ],
-                        ),
-                      ),
+                    padding: const EdgeInsets.only(left: 10, right: 10),
+                    child: ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      separatorBuilder: (context, index) {
+                        return const CustomDivider();
+                      },
+                      itemCount: state.inputs.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          child: CustomHistoryProducts(
+                            productName: state.inputs[index].id.toString(),
+                            date: state.inputs[index].date,
+                          ),
+                        );
+                      },
                     ),
                   );
-                },
-                itemCount: 20,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                    ),
-                    child: CustomHistoryProducts(
-                      productName: "Tualet bumaga elma soft touch (8 sht)",
-                      date: date,
-                    ),
-                  );
-                },
-              ),
+                }
+              },
             );
           }
-          return Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: ListView.separated(
-              physics: const BouncingScrollPhysics(),
-              separatorBuilder: (context, index) {
-                return const CustomDivider();
-              },
-              itemCount: 20,
-              itemBuilder: (context, index) {
+          return BlocBuilder<HistoryBloc, HistoryState>(
+            builder: (context, state) {
+              if (state.status == HistoryStatus.loading) {
+                return const ProductsShimmer();
+              } else {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ),
-                  child: CustomHistoryProducts(
-                    productName: "Tualet bumaga elma soft touch (8 sht)",
-                    date: date,
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: ListView.separated(
+                    physics: const BouncingScrollPhysics(),
+                    separatorBuilder: (context, index) {
+                      return const CustomDivider();
+                    },
+                    itemCount: state.outputs.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 10,
+                        ),
+                        child: CustomHistoryProducts(
+                          productName: state.outputs[index].id.toString(),
+                          date: state.outputs[index].date,
+                        ),
+                      );
+                    },
                   ),
                 );
-              },
-            ),
+              }
+            },
           );
         },
       ),

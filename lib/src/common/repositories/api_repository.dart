@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import '../../feature/input/models/input_model.dart';
+import '../../feature/balance/models/balance_model.dart';
+import '../models/input_model.dart';
 import '../../feature/input/models/post_input_model.dart';
 import '../../feature/input/models/post_product_model.dart';
 import '../../feature/input/models/posted_input_model.dart';
-import '../../feature/output/models/output_model.dart';
-import '../../feature/output/models/post_output_model.dart';
+import '../models/output_model.dart';
 import '../constants/api_constants.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
@@ -28,7 +28,7 @@ abstract class ApiRepository {
 
   Future<List<ProductModel>> search(String text);
 
-  Future<void> postBalance(Map<String, String> dates);
+  Future<void> postBalance(BalanceModel balanceModel);
 
   Future<void> deleteInput(int id);
 
@@ -36,7 +36,7 @@ abstract class ApiRepository {
     PostInputModel inputModel,
   );
 
-  Future<PostedOutputModel> postOutput(Map<String, Object?> json);
+  Future<OutputModel> postOutput(Map<String, Object?> json);
 
   Future<ProductModel> postProduct(PostProductModel productModel);
   Future<String> refreshToken();
@@ -176,7 +176,7 @@ class ApiRepositoryImp implements ApiRepository {
   }
 
   @override
-  Future<void> postBalance(Map<String, String> dates) async {
+  Future<void> postBalance(BalanceModel balanceModel) async {
     final token = await getToken();
 
     final header = {
@@ -186,7 +186,7 @@ class ApiRepositoryImp implements ApiRepository {
 
     final response = await apiService.request(
       ApiConst.balancePath,
-      body: jsonEncode(dates),
+      body: jsonEncode(balanceModel.toJson()),
       headers: header,
       method: Method.post,
     );
@@ -205,6 +205,7 @@ class ApiRepositoryImp implements ApiRepository {
       ApiConst.deleteInputIdPath(id),
       headers: header,
       method: Method.delete,
+      
     );
     debugPrint(response);
   }
@@ -272,7 +273,7 @@ class ApiRepositoryImp implements ApiRepository {
   }
 
   @override
-  Future<PostedOutputModel> postOutput(Map<String, Object?> json) async {
+  Future<OutputModel> postOutput(Map<String, Object?> json) async {
     final token = await getToken();
     final header = {
       "Content-Type": "application/json",
@@ -286,8 +287,8 @@ class ApiRepositoryImp implements ApiRepository {
       headers: header,
     );
 
-    final PostedOutputModel postedProduct =
-        PostedOutputModel.fromJson(jsonDecode(response));
+    final OutputModel postedProduct =
+        OutputModel.fromJson(jsonDecode(response));
     debugPrint(postedProduct.toString());
 
     return postedProduct;

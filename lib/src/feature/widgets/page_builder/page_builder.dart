@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../common/repositories/api_repository.dart';
 import '../../../common/services/api_service.dart';
 import '../../balance/balance_screen.dart';
+import '../../history/bloc/history_bloc.dart';
 import '../../history/history_screen.dart';
 import '../../input/bloc/input_bloc.dart';
 import '../../input/input_screen.dart';
@@ -56,7 +57,7 @@ class _MainPagesState extends State<PageBuilder> {
         controller: controller,
         children: [
           BlocProvider(
-            create: (context) => InputBloc( 
+            create: (context) => InputBloc(
               ApiRepositoryImp(
                 APIService(),
               ),
@@ -65,7 +66,16 @@ class _MainPagesState extends State<PageBuilder> {
           ),
           const OutputScreen(),
           const Balance(),
-          const HistoryScreen(),
+          BlocProvider(
+            create: (context) => HistoryBloc(
+              ApiRepositoryImp(
+                APIService(),
+              ),
+            )..add(
+                const GetInputsAndOutputsForHistory(),
+              ),
+            child: const HistoryScreen(),
+          ),
         ],
       ),
     );

@@ -1,10 +1,16 @@
+
+
+import 'package:equatable/equatable.dart';
+
+import '../../feature/output/widgets/output_dialog.dart';
+
 /// use when getting output
 
-class OutputModel {
+class OutputModel extends Equatable{
   final int id;
   final int product;
   final int count;
-  final String filial;
+  final Filials filial;
   final DateTime date;
 
   const OutputModel({
@@ -19,7 +25,7 @@ class OutputModel {
     int? id,
     int? product,
     int? count,
-    String? filial,
+    Filials? filial,
     DateTime? date,
   }) {
     return OutputModel(
@@ -36,32 +42,13 @@ class OutputModel {
     return 'OutputModel(id: $id, product: $product, count: $count, filial: $filial, date: $date)';
   }
 
-  @override
-  bool operator ==(covariant OutputModel other) {
-    if (identical(this, other)) return true;
-
-    return other.id == id &&
-        other.product == product &&
-        other.count == count &&
-        other.filial == filial &&
-        other.date == date;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        product.hashCode ^
-        count.hashCode ^
-        filial.hashCode ^
-        date.hashCode;
-  }
 
   Map<String, Object?> toJson() {
     return <String, Object?>{
       'id': id,
       'product': product,
       'count': count,
-      'filial': filial,
+      'filial': filial.backend,
       'date': date.toIso8601String(),
     };
   }
@@ -71,8 +58,11 @@ class OutputModel {
       id: map['id'] as int,
       product: map['product'] as int,
       count: map['count'] as int,
-      filial: map['filial'] as String,
+      filial: Filials.values.where((e) => e.backend==(map['filial'] as String)).first,
       date: DateTime.tryParse(map['date'] as String) ?? DateTime.now(),
     );
   }
+  
+  @override
+  List<Object?> get props => [id,product,count,filial,date];
 }

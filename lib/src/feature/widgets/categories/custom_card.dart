@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../common/constants/app_colors.dart';
 
-
 class CustomCard extends StatelessWidget {
   const CustomCard({
     super.key,
@@ -19,7 +18,7 @@ class CustomCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPressed,
-      child:   Card(
+      child: Card(
         elevation: 10,
         shadowColor: AppColors.dividerShadowColor,
         shape: const RoundedRectangleBorder(
@@ -43,7 +42,7 @@ class CustomCard extends StatelessWidget {
                     offset: Offset(0, 0),
                   ),
                   Shadow(
-                    color:AppColors.bottomShadowColor,
+                    color: AppColors.bottomShadowColor,
                     blurRadius: 10,
                     offset: const Offset(0, 5),
                   ),
@@ -52,7 +51,7 @@ class CustomCard extends StatelessWidget {
             ),
             Image(
               image: AssetImage(imageUrl),
-              height: 100,
+              width: MediaQuery.sizeOf(context).width * .25,
             ),
           ],
         ),

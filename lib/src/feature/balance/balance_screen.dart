@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdp_project/src/common/repositories/api_repository.dart';
+import 'package:pdp_project/src/common/services/api_service.dart';
 
 import '../../common/constants/app_colors.dart';
 import '../../common/constants/app_icons.dart';
+import 'bloc/balance_bloc.dart';
 import 'widgets/submit.dart';
 import 'widgets/time.dart';
 
@@ -82,7 +86,12 @@ class _BalanceState extends State<Balance> {
                     physics: const NeverScrollableScrollPhysics(),
                     controller: controller,
                     children: [
-                      Time(controller: controller),
+                      BlocProvider(
+                        create: (context) => BalanceBloc(
+                          ApiRepositoryImp(APIService()),
+                        ),
+                        child: Time(controller: controller),
+                      ),
                       Submit(controller: controller),
                     ],
                   ),

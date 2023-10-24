@@ -24,7 +24,7 @@ class _CustomBottomAppBarState extends State<CustomBottomAppBar> {
         topRight: Radius.circular(18),
       ),
       child: BottomAppBar(
-        height: 50,
+        height: 60,
         color: AppColors.bottomColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

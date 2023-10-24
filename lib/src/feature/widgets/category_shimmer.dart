@@ -3,7 +3,6 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../common/constants/app_colors.dart';
 
-
 class CustomCategoryShimmer extends StatelessWidget {
   const CustomCategoryShimmer({super.key});
 

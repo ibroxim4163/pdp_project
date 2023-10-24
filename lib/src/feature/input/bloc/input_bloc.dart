@@ -27,6 +27,7 @@ class InputBloc extends Bloc<InputPageEvent, InputPageState> {
           PostInputEvent e => _postInput(e, emit),
           PostProductEvent e => _postProduct(e, emit),
           InputPageSearchEvent e => _search(e, emit),
+          DeleteInputEvent e => _deleteInput(e, emit),
         });
   }
 
@@ -99,7 +100,9 @@ class InputBloc extends Bloc<InputPageEvent, InputPageState> {
     Emitter<InputPageState> emit,
   ) async {
     try {
-      PostedInputModel postedProduct = await repository.postInput(e.inputModel);
+      PostedInputModel postedProduct = await repository.postInput(
+        e.inputModel,
+      );
       debugPrint(postedProduct.toString());
     } catch (e) {
       emit(
@@ -156,5 +159,31 @@ class InputBloc extends Bloc<InputPageEvent, InputPageState> {
         status: InputStatus.loaded,
       ),
     );
+  }
+
+  Future<void> _deleteInput(
+    DeleteInputEvent e,
+    Emitter<InputPageState> emit,
+  ) async {
+    try {
+      await repository.deleteInput(e.inputId);
+      List<ProductModel> products = await repository.getProducts(e.categoryId);
+      emit(
+        InputPageState(
+          categories: state.categories,
+          products: products,
+          status: InputStatus.loaded,
+        ),
+      );
+    } catch (e) {
+       emit(
+        InputPageState(
+          categories: state.categories,
+          products: state.products,
+          status: InputStatus.error,
+          message: e.toString(),
+        ),
+      );
+    }
   }
 }
