@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdp_project/src/feature/input/repository/input_repository.dart';
 
 import '../../common/constants/app_icons.dart';
-import '../../common/repositories/api_repository.dart';
 import '../../common/services/api_service.dart';
 import '../widgets/categories/custom_card.dart';
-import '../widgets/category_shimmer.dart';
 import 'bloc/input_bloc.dart';
 import 'widget/input_page_products_screen.dart';
+
+enum Categories {
+  food(category: "Food", id: 2),
+  office(category: "Office", id: 4),
+  electronics(category: "Electronics", id: 3),
+  household(category: "Household", id: 1),
+  building(category: "Building", id: 5),
+  another(category: "Another", id: 6);
+
+  final String category;
+  final int id;
+  const Categories({
+    required this.category,
+    required this.id,
+  });
+}
 
 class InputScreen extends StatefulWidget {
   const InputScreen({super.key});
@@ -17,24 +32,9 @@ class InputScreen extends StatefulWidget {
 }
 
 class _InputScreenState extends State<InputScreen> {
-  late final TextEditingController controller;
-
-  @override
-  void initState() {
-    controller = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.only(
@@ -42,52 +42,45 @@ class _InputScreenState extends State<InputScreen> {
             right: 15,
             top: 45,
           ),
-          child: BlocBuilder<InputBloc, InputPageState>(
-            builder: (context, state) {
-              if (state.status == InputStatus.loading ) {
-                return const CustomCategoryShimmer();
-              } else {
-                return GridView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: state.categories.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemBuilder: (context, index) {
-                    return CustomCard(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                              create: (context) => InputBloc(
-                                ApiRepositoryImp(
-                                  APIService(),
-                                ),
-                              )..add(
-                                  InputPageGetProducts(
-                                    state.categories[index].id,
-                                  ),
-                                ),
-                              child: InputPageProducts(
-                                id: state.categories[index].id,
-                              ),
+          child: GridView.builder(
+            physics: const BouncingScrollPhysics(),
+            itemCount: Categories.values.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemBuilder: (context, index) {
+              return CustomCard(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => InputBloc(
+                          InputRepositoryImp(
+                            APIService(),
+                          ),
+                        )..add(
+                            InputPageGetProducts(
+                              Categories.values[index].id,
                             ),
                           ),
-                        );
-                      },
-                      imageUrl: AppIcons.categories[index],
-                      text: state.categories[index].title,
-                    );
-                  },
-                );
-              }
+                        child: InputPageProducts(
+                          id: Categories.values[index].id,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                imageUrl: AppIcons.categories[index],
+                text: Categories.values[index].category,
+              );
             },
           ),
         ),
       ),
     );
+  
   }
 }

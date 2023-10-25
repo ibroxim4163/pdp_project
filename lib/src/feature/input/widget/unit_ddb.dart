@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../common/constants/app_colors.dart';
@@ -12,7 +11,8 @@ class CustomUnitDropDownButton extends StatefulWidget {
   });
 
   @override
-  State<CustomUnitDropDownButton> createState() => _CustomUnitDropDownButtonState();
+  State<CustomUnitDropDownButton> createState() =>
+      _CustomUnitDropDownButtonState();
 }
 
 class _CustomUnitDropDownButtonState extends State<CustomUnitDropDownButton> {
@@ -31,7 +31,7 @@ class _CustomUnitDropDownButtonState extends State<CustomUnitDropDownButton> {
             width: 1,
           ),
           borderRadius: const BorderRadius.all(
-            Radius.circular(26),
+            Radius.circular(40),
           ),
         ),
         child: Theme(
@@ -40,6 +40,9 @@ class _CustomUnitDropDownButtonState extends State<CustomUnitDropDownButton> {
             splashColor: null,
           ),
           child: DropdownButton(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(40),
+            ),
             elevation: 0,
             padding: const EdgeInsets.symmetric(
               horizontal: 15,

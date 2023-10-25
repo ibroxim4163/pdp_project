@@ -12,12 +12,7 @@ class OutputPageGetProducts extends OutputEvent {
   List<Object?> get props => [id];
 }
 
-class OutputPageLoadingEvent extends OutputEvent {
-  const OutputPageLoadingEvent();
 
-  @override
-  List<Object?> get props => [];
-}
 
 class PostOutputEvent extends OutputEvent {
   final PostOutputModel outputModel;

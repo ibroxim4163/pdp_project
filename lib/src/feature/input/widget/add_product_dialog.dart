@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdp_project/src/feature/input/widget/category_ddb.dart';
 
 import '../../../common/constants/app_colors.dart';
 import '../../widgets/app_buttons.dart';
 import '../../widgets/custom_text_field.dart';
 import '../bloc/input_bloc.dart';
 import '../models/post_product_model.dart';
-import 'custom_unit_ddb.dart';
+import 'unit_ddb.dart';
 
 class AddProductDialog extends StatefulWidget {
-  const AddProductDialog({super.key});
+  final int categoryId;
+  const AddProductDialog({
+    required this.categoryId,
+    super.key,
+  });
 
   @override
   State<AddProductDialog> createState() => _AddProductDialogState();
@@ -21,6 +26,7 @@ class _AddProductDialogState extends State<AddProductDialog>
   final ValueNotifier<Unit> selectedUnit = ValueNotifier(
     Unit.values.first,
   );
+  final ValueNotifier<int> selectedCategoryId = ValueNotifier(2);
 
   final _formKey = GlobalKey<FormState>();
 
@@ -42,13 +48,22 @@ class _AddProductDialogState extends State<AddProductDialog>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                CustomTextField(
-                  validator: validateCategory,
-                  inputFormatter: FilteringTextInputFormatter.allow(
-                    RegExp(r"[123456]"),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 25),
+                    child: Text(
+                      "Unit",
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: AppColors.blackColor,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: "Inter-Regular",
+                          ),
+                    ),
                   ),
-                  controller: categoryController,
-                  text: "Categoty",
+                ),
+                CustomCategoryDropDownButton(
+                  selectedCategory: selectedCategoryId,
                 ),
                 CustomTextField(
                   controller: nameController,
@@ -89,16 +104,19 @@ class _AddProductDialogState extends State<AddProductDialog>
                   onSubmitted: () {
                     if (_formKey.currentState!.validate()) {
                       final PostProductModel productModel = PostProductModel(
-                        category: int.tryParse(categoryController.text) ?? 0,
+                        category: selectedCategoryId.value,
                         name: nameController.text,
-                        count: int.tryParse(countController.text) ?? 0,
+                        count: int.tryParse(countController.text) ?? 1,
                         unit: selectedUnit.value,
                         price: priceController.text,
                       );
-
-                      context
-                          .read<InputBloc>()
-                          .add(PostProductEvent(productModel));
+                      //TODO fix adding product
+                      context.read<InputBloc>().add(
+                            PostProductEvent(
+                              categoryId: widget.categoryId,
+                              product: productModel,
+                            ),
+                          );
                       Navigator.pop(context);
                     }
                   },

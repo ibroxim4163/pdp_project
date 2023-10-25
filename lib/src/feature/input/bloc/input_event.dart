@@ -4,13 +4,6 @@ sealed class InputPageEvent extends Equatable {
   const InputPageEvent();
 }
 
-class InputPageLoadingEvent extends InputPageEvent {
-  const InputPageLoadingEvent();
-
-  @override
-  List<Object?> get props => [];
-}
-
 class InputPageGetProducts extends InputPageEvent {
   final int id;
   const InputPageGetProducts(this.id);
@@ -30,7 +23,11 @@ class PostInputEvent extends InputPageEvent {
 
 class PostProductEvent extends InputPageEvent {
   final PostProductModel product;
-  const PostProductEvent(this.product);
+  final int categoryId;
+  const PostProductEvent({
+    required this.product,
+    required this.categoryId,
+  });
 
   @override
   List<Object?> get props => [product];
@@ -57,5 +54,5 @@ class DeleteInputEvent extends InputPageEvent {
   });
 
   @override
-  List<Object?> get props => [inputId,categoryId];
+  List<Object?> get props => [inputId, categoryId];
 }

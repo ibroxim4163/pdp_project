@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pdp_project/src/common/repositories/api_repository.dart';
-import 'package:pdp_project/src/common/services/api_service.dart';
 
 import '../../common/constants/app_colors.dart';
 import '../../common/constants/app_icons.dart';
+import '../../common/repositories/api_repository2.dart';
+import '../../common/services/api_service.dart';
 import 'bloc/balance_bloc.dart';
 import 'widgets/submit.dart';
 import 'widgets/time.dart';

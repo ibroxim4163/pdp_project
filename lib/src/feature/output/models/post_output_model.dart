@@ -32,4 +32,16 @@ class PostOutputModel extends Equatable {
     );
   }
 
+
+  PostOutputModel copyWith({
+    int? product,
+    int? count,
+    Filials? filial,
+  }) {
+    return PostOutputModel(
+      product: product ?? this.product,
+      count: count ?? this.count,
+      filial: filial ?? this.filial,
+    );
+  }
  }

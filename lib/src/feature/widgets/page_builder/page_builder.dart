@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common/repositories/api_repository.dart';
+import '../../../common/repositories/api_repository2.dart';
 import '../../../common/services/api_service.dart';
 import '../../balance/balance_screen.dart';
 import '../../history/bloc/history_bloc.dart';
 import '../../history/history_screen.dart';
-import '../../input/bloc/input_bloc.dart';
 import '../../input/input_screen.dart';
 import '../../output/output_screen.dart';
 import 'custom_bottom_app_bar.dart';
@@ -56,14 +55,7 @@ class _MainPagesState extends State<PageBuilder> {
         physics: const NeverScrollableScrollPhysics(),
         controller: controller,
         children: [
-          BlocProvider(
-            create: (context) => InputBloc(
-              ApiRepositoryImp(
-                APIService(),
-              ),
-            )..add(const InputPageLoadingEvent()),
-            child: const InputScreen(),
-          ),
+          const InputScreen(),
           const OutputScreen(),
           const Balance(),
           BlocProvider(

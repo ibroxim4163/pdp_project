@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import '../../common/constants/app_colors.dart';
 
-
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
     required this.controller,
@@ -33,7 +32,10 @@ class CustomTextField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 7, bottom: 5),
+            padding: const EdgeInsets.only(
+              left: 7,
+              bottom: 12,
+            ),
             child: Text(
               text,
               style: Theme.of(context).textTheme.titleMedium!.copyWith(

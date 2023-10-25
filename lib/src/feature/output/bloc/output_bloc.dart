@@ -1,33 +1,27 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pdp_project/src/common/repositories/api_repository.dart';
 
-import '../../../common/models/category_model.dart';
 import '../../../common/models/product_model.dart';
 import '../models/post_output_model.dart';
+import '../repository/output_repository.dart';
 
 part 'output_event.dart';
 part 'output_state.dart';
 
 class OutputBloc extends Bloc<OutputEvent, OutputState> {
-  final ApiRepositoryImp repository;
+  final OutputRepositoryImp repository;
   OutputBloc(this.repository)
       : super(
-          const OutputState(
-            status: OutputStatus.initial,
-            categories: [],
+          const OutputRefreshState(
             products: [],
           ),
         ) {
     on<OutputEvent>((event, emit) => switch (event) {
           OutputPageGetProducts e => _getProducts(e, emit),
-          OutputPageLoadingEvent e => _outputLoading(e, emit),
-      
-      PostOutputEvent() => null,
-      // TODO: Handle this case.
-      OutputPageSearch() => null,
-      // TODO: Handle this case.
-      DeleteOutputEvent() => null,
+          PostOutputEvent e => _postOutput(e, emit),
+          OutputPageSearch e => _searchOutput(e, emit),
+          DeleteOutputEvent e => _deleteOutput(e, emit),
         });
   }
 
@@ -36,26 +30,20 @@ class OutputBloc extends Bloc<OutputEvent, OutputState> {
     Emitter<OutputState> emit,
   ) async {
     emit(
-      OutputState(
-        categories: state.categories,
+      OutputLoadingState(
         products: state.products,
-        status: OutputStatus.loading,
       ),
     );
     try {
       List<ProductModel> products = await repository.getProducts(e.id);
       emit(
-        OutputState(
-          categories: state.categories,
+        OutputRefreshState(
           products: products,
-          status: OutputStatus.loaded,
         ),
       );
     } catch (e) {
       emit(
-        OutputState(
-          status: OutputStatus.loaded,
-          categories: state.categories,
+        OutputErrorState(
           products: state.products,
           message: e.toString(),
         ),
@@ -63,19 +51,48 @@ class OutputBloc extends Bloc<OutputEvent, OutputState> {
     }
   }
 
-  Future<void> _outputLoading(
-    OutputPageLoadingEvent e,
+  Future<void> _postOutput(
+    PostOutputEvent e,
     Emitter<OutputState> emit,
   ) async {
-    
-    List<CategoryModel> categories = await repository.getCategories();
+    final response = await repository.postOutput(e.outputModel);
+    debugPrint(response.toString());
+  }
 
+  Future<void> _searchOutput(
+    OutputPageSearch e,
+    Emitter<OutputState> emit,
+  ) async {
+    emit(OutputLoadingState(products: state.products));
+    List<ProductModel> searchedProducts = [];
+    if (e.text.isEmpty) {
+      searchedProducts = await repository.getProducts(e.id);
+    } else {
+      searchedProducts = await repository.search(e.text);
+    }
     emit(
-      OutputState(
-        status: OutputStatus.loading,
-        categories: categories,
-        products: state.products,
+      OutputRefreshState(
+        products: searchedProducts,
       ),
     );
+  }
+
+  Future<void> _deleteOutput(
+    DeleteOutputEvent e,
+    Emitter<OutputState> emit,
+  ) async {
+    try {
+      await repository.deleteOutput(e.outputId);
+      print("deleted");
+      List<ProductModel> products = await repository.getProducts(e.categoryId);
+      emit(OutputRefreshState(products: products));
+    } catch (e) {
+      emit(
+        OutputErrorState(
+          products: state.products,
+          message: e.toString(),
+        ),
+      );
+    }
   }
 }

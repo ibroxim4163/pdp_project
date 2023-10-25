@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common/repositories/api_repository.dart';
+import '../../../common/repositories/api_repository2.dart';
 import '../models/balance_model.dart';
 
 part 'balance_event.dart';

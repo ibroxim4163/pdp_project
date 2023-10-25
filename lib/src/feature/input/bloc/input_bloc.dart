@@ -1,94 +1,51 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common/models/category_model.dart';
 import '../../../common/models/product_model.dart';
-import '../../../common/repositories/api_repository.dart';
 import '../models/post_input_model.dart';
 import '../models/post_product_model.dart';
 import '../models/posted_input_model.dart';
+import '../repository/input_repository.dart';
 
 part 'input_event.dart';
 part 'input_state.dart';
 
-class InputBloc extends Bloc<InputPageEvent, InputPageState> {
-  final ApiRepositoryImp repository;
+class InputBloc extends Bloc<InputPageEvent, InputState> {
+  final InputRepositoryImp repository;
 
   InputBloc(this.repository)
-      : super(const InputPageState(
-          categories: [],
-          products: [],
-          status: InputStatus.initial,
-        )) {
-    on<InputPageEvent>((event, emit) => switch (event) {
-          InputPageLoadingEvent e => _loadingInput(e, emit),
-          InputPageGetProducts e => _getProducts(e, emit),
-          PostInputEvent e => _postInput(e, emit),
-          PostProductEvent e => _postProduct(e, emit),
-          InputPageSearchEvent e => _search(e, emit),
-          DeleteInputEvent e => _deleteInput(e, emit),
-        });
-  }
-
-  Future<void> _loadingInput(
-    InputPageLoadingEvent e,
-    Emitter<InputPageState> emit,
-  ) async {
-    emit(
-      InputPageState(
-        status: InputStatus.loading,
-        categories: state.categories,
-        products: state.products,
-      ),
+      : super(
+          const InputLoadingState(),
+        ) {
+    on<InputPageEvent>(
+      (event, emit) async => switch (event) {
+        InputPageGetProducts e => await _getProducts(e, emit),
+        PostInputEvent e => await _postInput(e, emit),
+        PostProductEvent e => await _postProduct(e, emit),
+        InputPageSearchEvent e => await _search(e, emit),
+        DeleteInputEvent e => await _deleteInput(e, emit),
+      },
+      transformer: sequential(),
     );
-    try {
-      List<CategoryModel> categories = await repository.getCategories();
-      emit(
-        InputPageState(
-          status: InputStatus.loaded,
-          categories: categories,
-          products: const [],
-        ),
-      );
-    } catch (e) {
-      emit(
-        InputPageState(
-          status: InputStatus.error,
-          categories: state.categories,
-          products: state.products,
-          message: e.toString(),
-        ),
-      );
-    }
   }
 
   Future<void> _getProducts(
     InputPageGetProducts e,
-    Emitter<InputPageState> emit,
+    Emitter emit,
   ) async {
     emit(
-      InputPageState(
-        categories: state.categories,
-        products: state.products,
-        status: InputStatus.loading,
-      ),
+      const InputLoadingState(),
     );
     try {
       List<ProductModel> products = await repository.getProducts(e.id);
-      emit(
-        InputPageState(
-          categories: state.categories,
-          products: products,
-          status: InputStatus.loaded,
-        ),
-      );
+      print(products);
+      print('-----------------------------------');
+      emit(InputLoadedState(products: products));
     } catch (e) {
       emit(
-        InputPageState(
-          status: InputStatus.loaded,
-          categories: state.categories,
-          products: state.products,
+        InputErrorState(
           message: e.toString(),
         ),
       );
@@ -97,7 +54,7 @@ class InputBloc extends Bloc<InputPageEvent, InputPageState> {
 
   Future<void> _postInput(
     PostInputEvent e,
-    Emitter<InputPageState> emit,
+    Emitter emit,
   ) async {
     try {
       PostedInputModel postedProduct = await repository.postInput(
@@ -106,10 +63,7 @@ class InputBloc extends Bloc<InputPageEvent, InputPageState> {
       debugPrint(postedProduct.toString());
     } catch (e) {
       emit(
-        InputPageState(
-          categories: state.categories,
-          products: state.products,
-          status: InputStatus.error,
+        InputErrorState(
           message: e.toString(),
         ),
       );
@@ -118,17 +72,20 @@ class InputBloc extends Bloc<InputPageEvent, InputPageState> {
 
   Future<void> _postProduct(
     PostProductEvent e,
-    Emitter<InputPageState> emit,
+    Emitter emit,
   ) async {
     try {
-      ProductModel productModel = await repository.postProduct(e.product);
-      debugPrint(productModel.toString());
+      List<ProductModel> products = await repository.getProducts(e.categoryId);
+      await repository.postProduct(e.product);
+      if (e.categoryId == e.product.category) {
+        print("${e.categoryId}----------${e.product.category}");
+        products = await repository.getProducts(e.categoryId);
+        emit(InputSuccessCratedState(products: products));
+        print('-=-=-=-=-=-=-=-=-=-=-');
+      }
     } catch (e) {
       emit(
-        InputPageState(
-          categories: state.categories,
-          products: state.products,
-          status: InputStatus.error,
+        InputErrorState(
           message: e.toString(),
         ),
       );
@@ -137,53 +94,186 @@ class InputBloc extends Bloc<InputPageEvent, InputPageState> {
 
   Future<void> _search(
     InputPageSearchEvent e,
-    Emitter<InputPageState> emit,
+    Emitter emit,
   ) async {
-    emit(
-      InputPageState(
-        categories: state.categories,
-        products: state.products,
-        status: InputStatus.loading,
-      ),
-    );
-    List<ProductModel> searchedProducts = [];
-    if (e.text.isEmpty) {
-      searchedProducts = await repository.getProducts(e.id);
-    } else {
-      searchedProducts = await repository.search(e.text);
+    emit(const InputLoadingState());
+    Future.delayed(const Duration(seconds: 2));
+    try {
+      List<ProductModel> searchedProducts = [];
+      if (e.text.isEmpty) {
+        searchedProducts = await repository.getProducts(e.id);
+      } else {
+        searchedProducts = await repository.search(e.text);
+      }
+      emit(InputLoadedState(products: searchedProducts));
+    } catch (e) {
+      emit(
+        InputErrorState(
+          message: e.toString(),
+        ),
+      );
     }
-    emit(
-      InputPageState(
-        categories: state.categories,
-        products: searchedProducts,
-        status: InputStatus.loaded,
-      ),
-    );
   }
 
   Future<void> _deleteInput(
     DeleteInputEvent e,
-    Emitter<InputPageState> emit,
+    Emitter emit,
   ) async {
     try {
       await repository.deleteInput(e.inputId);
       List<ProductModel> products = await repository.getProducts(e.categoryId);
-      emit(
-        InputPageState(
-          categories: state.categories,
-          products: products,
-          status: InputStatus.loaded,
-        ),
-      );
+      emit(InputLoadedState(products: products));
     } catch (e) {
-       emit(
-        InputPageState(
-          categories: state.categories,
-          products: state.products,
-          status: InputStatus.error,
+      emit(
+        InputErrorState(
           message: e.toString(),
         ),
       );
     }
   }
 }
+
+  // Future<void> _getProducts(
+  //   InputPageGetProducts e,
+  //   Emitter<InputPageState> emit,
+  // ) async {
+  //   emit(
+  //     InputPageState(
+  //       products: state.products,
+  //       status: InputStatus.loading,
+  //     ),
+  //   );
+  //   try {
+  //     List<ProductModel> products = await repository.getProducts(e.id);
+  //     emit(
+  //       InputPageState(
+  //         products: products,
+  //         status: InputStatus.loaded,
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     emit(
+  //       InputPageState(
+  //         status: InputStatus.loaded,
+  //         products: state.products,
+  //         message: e.toString(),
+  //       ),
+  //     );
+  //   }
+  // }
+
+  // Future<void> _postInput(
+  //   PostInputEvent e,
+  //   Emitter<InputPageState> emit,
+  // ) async {
+  //   try {
+  //     PostedInputModel postedProduct = await repository.postInput(
+  //       e.inputModel,
+  //     );
+  //     debugPrint(postedProduct.toString());
+  //   } catch (e) {
+  //     emit(
+  //       InputPageState(
+  //         products: state.products,
+  //         status: InputStatus.error,
+  //         message: e.toString(),
+  //       ),
+  //     );
+  //   }
+  // }
+
+  // Future<void> _postProduct(
+  //   PostProductEvent e,
+  //   Emitter<InputPageState> emit,
+  // ) async {
+  //   try {
+  //     //TODO refresh page
+  //     emit(
+  //       InputPageState(
+  //         products: state.products,
+  //         status: InputStatus.loading,
+  //       ),
+  //     );
+  //     List<ProductModel> products = await repository.getProducts(e.categoryId);
+  //     ProductModel productModel = await repository.postProduct(e.product);
+  //     print("--------------------------------");
+  //     print(products.length);
+  //     if (e.categoryId == e.product.category) {
+  //       print("${e.categoryId}----------${e.product.category}");
+  //       products = await repository.getProducts(e.categoryId);
+  //     }
+  //     print("--------------------------------");
+  //     print(products.length);
+  //     print("--------------------------------");
+
+  //     debugPrint(productModel.toString());
+  //     emit(
+  //       InputPageState(
+  //         products: products,
+  //         status: InputStatus.loaded,
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     emit(
+  //       InputPageState(
+  //         products: state.products,
+  //         status: InputStatus.error,
+  //         message: e.toString(),
+  //       ),
+  //     );
+  //   }
+  // }
+
+  // Future<void> _search(
+  //   InputPageSearchEvent e,
+  //   Emitter<InputPageState> emit,
+  // ) async {
+  //   emit(
+  //     InputPageState(
+  //       products: state.products,
+  //       status: InputStatus.loading,
+  //     ),
+  //   );
+  //   List<ProductModel> searchedProducts = [];
+  //   if (e.text.isEmpty) {
+  //     searchedProducts = await repository.getProducts(e.id);
+  //   } else {
+  //     searchedProducts = await repository.search(e.text);
+  //   }
+  //   emit(
+  //     InputPageState(
+  //       products: searchedProducts,
+  //       status: InputStatus.loaded,
+  //     ),
+  //   );
+  // }
+
+  // Future<void> _deleteInput(
+  //   DeleteInputEvent e,
+  //   Emitter<InputPageState> emit,
+  // ) async {
+  //   try {
+  //     // print("-----------------------------");
+  //     // print(state.products.length);
+  //     // print("-----------------------------");
+  //     await repository.deleteInput(e.inputId);
+  //     List<ProductModel> products = await repository.getProducts(e.categoryId);
+  //     // print(products.length);
+  //     // print("-----------------------------");
+
+  //     emit(
+  //       InputPageState(
+  //         products: products,
+  //         status: InputStatus.loaded,
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     emit(
+  //       InputPageState(
+  //         products: state.products,
+  //         status: InputStatus.error,
+  //         message: e.toString(),
+  //       ),
+  //     );
+  //   }
+  // }

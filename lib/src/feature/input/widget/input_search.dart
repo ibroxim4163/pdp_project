@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdp_project/src/feature/input/repository/input_repository.dart';
 
 import '../../../common/constants/app_colors.dart';
 import '../../../common/constants/app_icons.dart';
-import '../../../common/repositories/api_repository.dart';
 import '../../../common/services/api_service.dart';
 import '../bloc/input_bloc.dart';
 import 'add_product_dialog.dart';
@@ -32,7 +32,7 @@ class _InputSearchState extends State<InputSearch> {
         children: [
           const BackButton(color: AppColors.blackColor),
           SizedBox(
-            height: 50,
+            height: 45,
             width: showIcon ? width * .7 : width * .8,
             child: TextField(
               onTap: () {
@@ -54,6 +54,8 @@ class _InputSearchState extends State<InputSearch> {
                   });
                 }
               },
+              cursorHeight: 25,
+              cursorColor: AppColors.mainColor,
               decoration: const InputDecoration(
                 hintText: "Search",
                 hintStyle: TextStyle(
@@ -75,7 +77,7 @@ class _InputSearchState extends State<InputSearch> {
                   ),
                   borderSide: BorderSide(
                     color: AppColors.mainColor,
-                    width: 1,
+                    width: .3,
                   ),
                 ),
                 suffixIcon: Padding(
@@ -96,9 +98,11 @@ class _InputSearchState extends State<InputSearch> {
                       context: context,
                       builder: (context) => BlocProvider(
                         create: (context) => InputBloc(
-                          ApiRepositoryImp(APIService()),
+                          InputRepositoryImp(APIService()),
                         ),
-                        child: const AddProductDialog(),
+                        child: AddProductDialog(
+                          categoryId: widget.id,
+                        ),
                       ),
                     ),
                     icon: const Icon(

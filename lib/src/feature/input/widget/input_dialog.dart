@@ -79,6 +79,7 @@ class _InputDialogState extends State<InputDialog> {
                 price: priceController.text,
               );
               context.read<InputBloc>().add(PostInputEvent(inputModel));
+              Navigator.pop(context);
             },
           ),
           const SizedBox(height: 7),

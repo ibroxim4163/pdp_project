@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:dio/dio.dart';
 
 import '../constants/api_constants.dart';
-import '../models/token_model.dart';
 
 enum Method {
   get,
@@ -15,27 +13,37 @@ enum Method {
   delete,
 }
 
-// String username = "";
-// String password = "";
-
 class APIService {
   factory APIService() => _;
 
-  APIService._instance();
+  const APIService._instance();
 
-  static Dio _dio = Dio(
+  static const _ = APIService._instance();
+
+  static final Dio _dio = Dio(
     BaseOptions(
       baseUrl: ApiConst.baseUrl,
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer ${token}",
-      },
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
+      headers: ApiConst.header(tokenAccess),
     ),
-  );
+  )..interceptors.add(
+      InterceptorsWrapper(
+        onError: (e, handler) async {
+          if (e.response?.statusCode == 403 || e.response?.statusCode == 401) {
+            final request = e.requestOptions;
+            tokenAccess = await APIService.refToken();
+            updateToken();
+            return handler.next(e);
+          }
+          return handler.next(e);
+        },
+      ),
+    );
 
-  static final _ = APIService._instance();
+  static void updateToken() {
+    _dio.options.headers = ApiConst.header(tokenAccess);
+  }
 
   Future<String> request(
     String requestPath, {
@@ -48,72 +56,28 @@ class APIService {
     // final params = _queryToString(queryParametersAll);
     final uri = Uri.parse("$requestPath$queryParametersAll");
 
-    // if
-
     try {
       Response response = await switch (method) {
-        Method.get => _dio.get(requestPath, he: headers),
-        Method.post => _dio.post(requestPath, headers: headers, body: body),
-        Method.put => _dio.put(requestPath, headers: headers, body: body),
-        Method.patch => _dio.patch(requestPath, headers: headers, body: body),
-        Method.delete => _dio.delete(requestPath, headers: headers),
+        Method.get => _dio.get(requestPath),
+        Method.post => _dio.post(requestPath, data: body),
+        Method.put => _dio.put(requestPath, data: body),
+        Method.patch => _dio.patch(requestPath, data: body),
+        Method.delete => _dio.delete(requestPath),
       };
-
-      return switch (response.statusCode) {
+      return switch (response.statusCode!) {
         < 200 => throw Error.throwWithStackTrace(
-            "${response.reasonPhrase}",
+            "${response.statusMessage}",
             StackTrace.current,
           ),
-        >= 200 && < 300 => response.body,
+        >= 200 && < 300 => jsonEncode(response.data),
         >= 300 && 400 => throw Error.throwWithStackTrace(
-            "${response.reasonPhrase}",
+            "${response.statusMessage}",
             StackTrace.current,
           ),
-        >= 400 && < 500 => await () async {
-            if (response.statusCode == 401 || response.statusCode == 409) {
-              final header = {
-                "Content-Type": "application/json",
-              };
-              Map<String, String> bodyToken = {
-                "username": "admin",
-                "password": "1",
-              };
-
-              String response = await request(
-                ApiConst.postToken,
-                headers: header,
-                body: jsonEncode(bodyToken),
-                method: Method.post,
-              );
-
-              final TokenModel token = TokenModel.fromMap(jsonDecode(response));
-              AndroidOptions getAndroidOptions() => const AndroidOptions(
-                    encryptedSharedPreferences: true,
-                  );
-              final storage =
-                  FlutterSecureStorage(aOptions: getAndroidOptions());
-              storage.write(key: "access", value: token.access);
-              storage.write(key: "refresh", value: token.refresh);
-              print(storage.read(key: "access"));
-              final headerToken = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer ${token.access}",
-              };
-
-              return await request(
-                requestPath,
-                method: method,
-                queryParametersAll: queryParametersAll,
-                headers: headerToken,
-                body: body,
-              );
-            }
-
-            return throw Error.throwWithStackTrace(
-              "Token Error",
-              StackTrace.current,
-            );
-          }(),
+        >= 400 && < 500 => throw Error.throwWithStackTrace(
+            "Client Error",
+            StackTrace.current,
+          ),
         >= 500 => throw Error.throwWithStackTrace(
             "Server Error",
             StackTrace.current,
@@ -129,17 +93,26 @@ class APIService {
         "Check Your network",
         StackTrace.current,
       );
+    } on DioException catch (e, stackTrace) {
+      if (e.response?.statusCode == 403) {
+        return await request(requestPath,
+            body: body,
+            headers: headers,
+            method: method,
+            queryParametersAll: queryParametersAll);
+      }
+      debugPrint("$e\n$stackTrace");
+      rethrow;
     } catch (e, stackTrace) {
       debugPrint("$e\n$stackTrace");
       rethrow;
     }
   }
 
-  // String _queryToString(Map<String, List<String>> query) => query.isEmpty
-  //     ? ""
-  //     : "?search=${query.entries.map(
-  //           (e) => e.value.map((v) => "${e.key}=$v").toList(),
-  //         ).map<String>(
-  //           (e) => e.join("&"),
-  //         ).join("&")}";
+  static Future<String> refToken() async {
+    final data = await Dio()
+        .post(ApiConst.postRefreshToken, data: {"refresh": tokenRefresh});
+    debugPrint(data.data["access"]);
+    return data.data["access"];
+  }
 }

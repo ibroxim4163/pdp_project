@@ -1,12 +1,15 @@
 enum Unit {
-  kv(backend: "kv_metr",frontend: "Kv Metr"),
-  rulon(backend: "rulon",frontend: "Rulon"),
-  pochka(backend: "pochka",frontend: "Pochka"),
-  dona(backend: "dona",frontend: "Dona");
+  dona(backend: "dona", frontend: "Dona"),
+  kv(backend: "kv_metr", frontend: "Kv Metr"),
+  rulon(backend: "rulon", frontend: "Rulon"),
+  pochka(backend: "pochka", frontend: "Pochka");
 
   final String frontend;
   final String backend;
-  const Unit({required this.frontend,required this.backend,});
+  const Unit({
+    required this.frontend,
+    required this.backend,
+  });
 }
 
 class PostProductModel {

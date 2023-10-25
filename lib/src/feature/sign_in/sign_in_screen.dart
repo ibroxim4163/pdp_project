@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../common/constants/api_constants.dart';
 import '../../common/constants/app_colors.dart';
 import '../../common/constants/app_icons.dart';
+import '../../common/repositories/api_repository2.dart';
+import '../../common/services/api_service.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/page_builder/page_builder.dart';
 import '../widgets/switch_section.dart';
@@ -21,6 +24,7 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     super.initState();
+    getToken();
     userController = TextEditingController();
     passwordController = TextEditingController();
   }
@@ -30,6 +34,15 @@ class _SignInState extends State<SignIn> {
     userController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  void getToken() async {
+    final tokenModel = await ApiRepositoryImp(APIService()).getToken();
+    tokenAccess = tokenModel.access;
+    tokenRefresh = tokenModel.refresh;
+    APIService.updateToken();
+    // print(tokenAccess);
+    debugPrint(tokenRefresh);
   }
 
   @override

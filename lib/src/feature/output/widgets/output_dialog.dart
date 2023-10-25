@@ -1,32 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pdp_project/src/common/models/output_model.dart';
+import 'package:pdp_project/src/common/models/product_model.dart';
+import 'package:pdp_project/src/feature/output/models/post_output_model.dart';
 
 import '../../../common/constants/app_colors.dart';
 import '../../widgets/app_buttons.dart';
 import '../../widgets/custom_text_field.dart';
+import '../bloc/output_bloc.dart';
+import 'filial_ddb.dart';
 
 enum Filials {
-  pdpCollege("pdp_college", "PDP College"),
-  pdpUniversity("pdp_university", "PDP University"),
-  pdpJunior("pdp_junior", "PDP Junior"),
-  pdpSchool("pdp_school", "PDP School"),
-  pdpAcademy("pdp_academy", "PDP Academy");
+  pdpAcademy("pdp_academy", "PDP ACADEMY"),
+  pdpCollege("pdp_collage", "PDP COLLEGE"),
+  pdpUniversity("pdp_university", "PDP UNIVERSITY"),
+  pdpJunior("pdp_junior", "PDP JUNIOR"),
+  pdpSchool("pdp_school", "PDP SCHOOL");
 
   final String backend;
   final String frontend;
   const Filials(this.backend, this.frontend);
 }
 
-class Filyal extends StatefulWidget {
-  const Filyal({super.key});
+class OutputDialog extends StatefulWidget {
+  final ProductModel product;
+  const OutputDialog({
+    required this.product,
+    super.key,
+  });
 
   @override
-  State<Filyal> createState() => _FilyalState();
+  State<OutputDialog> createState() => _OutputDialogState();
 }
 
-class _FilyalState extends State<Filyal> {
+class _OutputDialogState extends State<OutputDialog> {
   late final TextEditingController countController;
-  final ValueNotifier<String> selectedFilial =
-      ValueNotifier(Filials.values.first.backend);
+  final ValueNotifier<Filials> selectedFilial =
+      ValueNotifier(Filials.values.first);
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -40,114 +52,86 @@ class _FilyalState extends State<Filyal> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: Center(
-            child: Text(
-              "Tualet bumaga elma soft touch (8 sht)",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    color: AppColors.blackColor,
-                    fontFamily: "Inter-Regular",
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 15),
-        CustomTextField(
-          controller: countController,
-          text: "Count",
-        ),
-        const SizedBox(height: 15),
-        CustomDropDownButton(selectedFilial: selectedFilial),
-        const Spacer(),
-        CustomButton(
-          onCancelled: () => Navigator.pop(context),
-          onSubmitted: () {},
-        ),
-        const SizedBox(height: 12),
-      ],
-    );
+  String? validateCount(String? value) {
+    if (value != null && value.isEmpty) {
+      return "Please write count";
+    }
+    int count = int.tryParse(value!) ?? 1;
+    if (count > widget.product.count) {
+      return "There are no $count ${widget.product.name}";
+    }
+    return null;
   }
-}
-
-class CustomDropDownButton extends StatefulWidget {
-  final ValueNotifier<String> selectedFilial;
-  const CustomDropDownButton({
-    required this.selectedFilial,
-    super.key,
-  });
-
-  @override
-  State<CustomDropDownButton> createState() => _CustomDropDownButtonState();
-}
-
-class _CustomDropDownButtonState extends State<CustomDropDownButton> {
-  String filial = Filials.values.first.frontend;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 15,
-      ),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppColors.textFieldBorderColor,
-            width: 1,
-          ),
-          borderRadius: const BorderRadius.all(
-            Radius.circular(26),
-          ),
-        ),
-        child: Theme(
-          data: ThemeData(
-            hoverColor: AppColors.whiteColor,
-            splashColor: null,
-          ),
-          child: DropdownButton(
-            elevation: 0,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 15,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 10,
+              top: 10,
+              right: 10,
+              bottom: 3,
             ),
-            dropdownColor: AppColors.whiteColor,
-            focusColor: AppColors.whiteColor,
-            underline: const SizedBox(),
-            isExpanded: true,
-            hint: Text(
-              filial,
-              style: const TextStyle(
-                color: AppColors.blackColor,
-              ),
-            ),
-            items: List.generate(
-              5,
-              (index) => DropdownMenuItem(
-                value: Text(Filials.values[index].frontend),
-                child: ListTile(
-                  title: Text(Filials.values[index].frontend),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.product.name,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: AppColors.mainColor,
+                        fontFamily: "Inter-Regular",
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
-                onTap: () {
-                  setState(
-                    () {
-                      filial = Filials.values[index].frontend;
-                      widget.selectedFilial.value =
-                          Filials.values[index].backend;
-                    },
-                  );
-                },
               ),
             ),
-            onChanged: (value) {},
           ),
-        ),
+          Center(
+            child: Text(
+              "(${widget.product.count.toString()}) count",
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          CustomTextField(
+            controller: countController,
+            validator: validateCount,
+            inputFormatter: FilteringTextInputFormatter.allow(
+              RegExp(r"[0-9]"),
+            ),
+            text: "Count",
+          ),
+          const SizedBox(height: 15),
+          CustomDropDownButton(
+            selectedFilial: selectedFilial,
+          ),
+          const Spacer(),
+          CustomButton(
+            onCancelled: () => Navigator.pop(context),
+            onSubmitted: () {
+              if (_formKey.currentState!.validate()) {
+                int count = int.tryParse(countController.text) ?? 1;
+                final PostOutputModel output = PostOutputModel(
+                  product: widget.product.id,
+                  count: count,
+                  filial: selectedFilial.value,
+                );
+                context.read<OutputBloc>().add(
+                      PostOutputEvent(output),
+                    );
+              }
+            },
+          ),
+          const SizedBox(height: 12),
+        ],
       ),
     );
   }

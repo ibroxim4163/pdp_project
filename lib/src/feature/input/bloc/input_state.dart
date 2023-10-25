@@ -7,23 +7,42 @@ enum InputStatus {
   initial,
 }
 
-class InputPageState extends Equatable {
-  final InputStatus status;
-  final List<CategoryModel> categories;
-  final List<ProductModel> products;
-  final String? message;
-  const InputPageState({
-    required this.categories,
-    required this.products,
-    required this.status,
-    this.message,
-  });
+abstract class InputState extends Equatable{
+  const InputState();
+}
 
+class InputLoadingState extends InputState {
+  const InputLoadingState();
+  
   @override
-  List<Object> get props => [
-        categories,
-        products,
-        status,
-        message ?? "",
-      ];
+  List<Object?> get props => [];
+}
+
+class InputLoadedState extends InputState {
+  const InputLoadedState({required this.products});
+
+  final List<ProductModel> products;
+  
+  @override
+  List<Object?> get props => [products];
+  
+}
+class InputSuccessCratedState extends InputState {
+  const InputSuccessCratedState({required this.products});
+
+  final List<ProductModel> products;
+  
+  @override
+  List<Object?> get props => [products];
+}
+
+class InputErrorState extends InputState {
+  final String message;
+
+  const InputErrorState({
+    required this.message,
+  });
+  
+  @override
+  List<Object?> get props => [message];
 }

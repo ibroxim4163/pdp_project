@@ -23,16 +23,6 @@ class _CustomCategoriesState extends State<CustomCategories> {
     "Building",
     "Another"
   ];
-
-  List images = [
-    AppIcons.category1,
-    AppIcons.category2,
-    AppIcons.category3,
-    AppIcons.category4,
-    AppIcons.category5,
-    AppIcons.category6,
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -53,7 +43,7 @@ class _CustomCategoriesState extends State<CustomCategories> {
           itemBuilder: (context, index) {
             return CustomCard(
               onPressed: widget.onTap,
-              imageUrl: images[index],
+              imageUrl: AppIcons.categories[index],
               text: text[index],
             );
           },

@@ -1,35 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:pdp_project/src/common/models/product_model.dart';
-import 'package:pdp_project/src/feature/widgets/products_shimmer.dart';
 
 import '../../../common/constants/app_colors.dart';
+import '../../../common/models/product_model.dart';
 import '../../../common/services/api_service.dart';
 import '../../widgets/custom_divider.dart';
-import '../bloc/input_bloc.dart';
-import '../repository/input_repository.dart';
-import 'input_dialog.dart';
-import 'input_search.dart';
+import '../../widgets/products_shimmer.dart';
+import '../bloc/output_bloc.dart';
+import '../repository/output_repository.dart';
+import 'output_dialog.dart';
+import 'output_search.dart';
 
-class InputPageProducts extends StatefulWidget {
+class OutputPageProducts extends StatelessWidget {
   final int id;
-  const InputPageProducts({
+  const OutputPageProducts({
     required this.id,
     super.key,
   });
 
-  @override
-  State<InputPageProducts> createState() => _InputPageProductsState();
-}
-
-class _InputPageProductsState extends State<InputPageProducts> {
   void openDialog({
     required BuildContext context,
-    required String productName,
-    required int id,
+    required ProductModel product,
   }) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -43,14 +37,13 @@ class _InputPageProductsState extends State<InputPageProducts> {
           child: SizedBox(
             height: size.height * 0.55,
             child: BlocProvider(
-              create: (context) => InputBloc(
-                InputRepositoryImp(
+              create: (context) => OutputBloc(
+                OutputRepositoryImp(
                   APIService(),
                 ),
               ),
-              child: InputDialog(
-                productName: productName,
-                id: id,
+              child: OutputDialog(
+                product: product,
               ),
             ),
           ),
@@ -59,8 +52,6 @@ class _InputPageProductsState extends State<InputPageProducts> {
     );
   }
 
-  List<ProductModel> products = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +59,7 @@ class _InputPageProductsState extends State<InputPageProducts> {
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, 60),
         child: SafeArea(
-          child: InputSearch(id: widget.id),
+          child: OutputSearch(id: id),
         ),
       ),
       body: Padding(
@@ -76,22 +67,12 @@ class _InputPageProductsState extends State<InputPageProducts> {
           horizontal: 15,
           vertical: 20,
         ),
-        child: BlocConsumer<InputBloc, InputState>(
-          listener: (context, state) {
-            // if (state is InputSuccessCratedState) {
-            //   context.read<InputBloc>().add(InputPageGetProducts(widget.id));
-            // }
-          },
-   
+        child: BlocBuilder<OutputBloc, OutputState>(
+          buildWhen: (previous, current) => previous != current,
           builder: (context, state) {
-            print("=============================");
-            print(state);
-
-            if (state is InputLoadingState) {
+            if (state is OutputLoadingState) {
               return const ProductsShimmer();
-            }
-
-            if (state is InputSuccessCratedState) {
+            } else {
               return ListView.separated(
                 itemBuilder: (context, index) => Slidable(
                   endActionPane: ActionPane(
@@ -101,10 +82,10 @@ class _InputPageProductsState extends State<InputPageProducts> {
                       SlidableAction(
                         padding: EdgeInsets.zero,
                         onPressed: (context) {
-                          context.read<InputBloc>().add(
-                                DeleteInputEvent(
-                                  categoryId: widget.id,
-                                  inputId: state.products[index].id,
+                          context.read<OutputBloc>().add(
+                                DeleteOutputEvent(
+                                  categoryId: id,
+                                  outputId: state.products[index].id,
                                 ),
                               );
                         },
@@ -137,8 +118,7 @@ class _InputPageProductsState extends State<InputPageProducts> {
                         ),
                         onTap: () => openDialog(
                           context: context,
-                          productName: state.products[index].name,
-                          id: state.products[index].id,
+                          product: state.products[index],
                         ),
                       ),
                     ),
@@ -148,8 +128,6 @@ class _InputPageProductsState extends State<InputPageProducts> {
                 itemCount: state.products.length,
               );
             }
-
-            return SizedBox.shrink();
           },
         ),
       ),

@@ -1,4 +1,5 @@
-String token = "";
+String tokenAccess = "";
+String tokenRefresh = "";
 
 abstract class ApiConst {
   static const baseUrl = "https://docs.bionix.uz/api";
@@ -28,4 +29,10 @@ abstract class ApiConst {
   static const postToken = "$baseUrl/token/";
 
   static const postRefreshToken = "$baseUrl/token/refresh/";
+
+
+  static Map<String, String> header(String token) => {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer $token",
+  };
 }

@@ -1,19 +1,36 @@
 part of 'output_bloc.dart';
 
-enum OutputStatus { loading, initial, loaded }
-
- class OutputState extends Equatable {
-  final OutputStatus status;
-  final List<CategoryModel> categories;
+sealed class OutputState extends Equatable {
   final List<ProductModel> products;
-  final String? message;
   const OutputState({
-    required this.status,
-    required this.categories,
     required this.products,
-    this.message,
+  });
+}
+
+class OutputRefreshState extends OutputState {
+  const OutputRefreshState({
+    required super.products,
   });
 
   @override
-  List<Object> get props => [status,categories,products,message??""];
+  List<Object?> get props => [products];
+}
+
+class OutputErrorState extends OutputState {
+  final String message;
+
+  const OutputErrorState({
+    required super.products,
+    required this.message,
+  });
+
+  @override
+  List<Object?> get props => [products, message];
+}
+
+class OutputLoadingState extends OutputState {
+  const OutputLoadingState({required super.products});
+
+  @override
+  List<Object?> get props => [];
 }
