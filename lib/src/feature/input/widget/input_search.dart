@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pdp_project/src/feature/input/repository/input_repository.dart';
 
 import '../../../common/constants/app_colors.dart';
 import '../../../common/constants/app_icons.dart';
 import '../../../common/services/api_service.dart';
 import '../bloc/input_bloc.dart';
+import '../repository/input_repository.dart';
 import 'add_product_dialog.dart';
 
 class InputSearch extends StatefulWidget {
@@ -94,17 +94,28 @@ class _InputSearchState extends State<InputSearch> {
               ? Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => BlocProvider(
-                        create: (context) => InputBloc(
-                          InputRepositoryImp(APIService()),
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => BlocProvider(
+                          create: (context) => InputBloc(
+                            InputRepositoryImp(APIService()),
+                          ),
+                          child: AddProductDialog(
+                            categoryId: widget.id,
+                          ),
                         ),
-                        child: AddProductDialog(
-                          categoryId: widget.id,
-                        ),
-                      ),
-                    ),
+                      );
+
+                      await Future.delayed(
+                        const Duration(milliseconds: 500),
+                        () {
+                          context
+                              .read<InputBloc>()
+                              .add(RefreshInput(widget.id));
+                        },
+                      );
+                    },
                     icon: const Icon(
                       Icons.add_circle_outline_sharp,
                       color: AppColors.mainColor,

@@ -46,13 +46,21 @@ class InputPageSearchEvent extends InputPageEvent {
 }
 
 class DeleteInputEvent extends InputPageEvent {
-  final int inputId;
+  final ProductModel product;
   final int categoryId;
   const DeleteInputEvent({
     required this.categoryId,
-    required this.inputId,
+    required this.product,
   });
 
   @override
-  List<Object?> get props => [inputId, categoryId];
+  List<Object?> get props => [product, categoryId];
+}
+
+class RefreshInput extends InputPageEvent {
+  final int categoryId;
+  const RefreshInput(this.categoryId);
+
+  @override
+  List<Object?> get props => [];
 }

@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 /// use when getting category products
 
-class ProductModel {
+class ProductModel extends Equatable {
   final int id;
   final String name;
   final int rating;
@@ -12,8 +14,6 @@ class ProductModel {
     required this.rating,
     required this.count,
   });
-
-  
 
   ProductModel copyWith({
     int? id,
@@ -37,20 +37,16 @@ class ProductModel {
   @override
   bool operator ==(covariant ProductModel other) {
     if (identical(this, other)) return true;
-  
-    return 
-      other.id == id &&
-      other.name == name &&
-      other.rating == rating &&
-      other.count == count;
+
+    return other.id == id &&
+        other.name == name &&
+        other.rating == rating &&
+        other.count == count;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
-      name.hashCode ^
-      rating.hashCode ^
-      count.hashCode;
+    return id.hashCode ^ name.hashCode ^ rating.hashCode ^ count.hashCode;
   }
 
   Map<String, Object?> toJson() {
@@ -71,4 +67,6 @@ class ProductModel {
     );
   }
 
+  @override
+  List<Object?> get props => [id, name, rating, count];
 }

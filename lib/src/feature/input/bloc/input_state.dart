@@ -7,42 +7,35 @@ enum InputStatus {
   initial,
 }
 
-abstract class InputState extends Equatable{
-  const InputState();
+abstract class InputState extends Equatable {
+  final List<ProductModel> products;
+  const InputState({required this.products});
+
+  @override
+  List<Object?> get props => [products];
 }
 
 class InputLoadingState extends InputState {
-  const InputLoadingState();
-  
-  @override
-  List<Object?> get props => [];
+  const InputLoadingState({required super.products});
 }
 
 class InputLoadedState extends InputState {
-  const InputLoadedState({required this.products});
-
-  final List<ProductModel> products;
-  
-  @override
-  List<Object?> get props => [products];
-  
+  const InputLoadedState({required super.products});
 }
-class InputSuccessCratedState extends InputState {
-  const InputSuccessCratedState({required this.products});
 
-  final List<ProductModel> products;
-  
-  @override
-  List<Object?> get props => [products];
+class InputSuccessCratedState extends InputState {
+  const InputSuccessCratedState({required super.products});
+
 }
 
 class InputErrorState extends InputState {
   final String message;
 
   const InputErrorState({
+    required super.products,
     required this.message,
   });
-  
+
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message,products];
 }
