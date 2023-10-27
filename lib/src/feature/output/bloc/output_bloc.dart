@@ -21,7 +21,6 @@ class OutputBloc extends Bloc<OutputEvent, OutputState> {
           OutputPageGetProducts e => _getProducts(e, emit),
           PostOutputEvent e => _postOutput(e, emit),
           OutputPageSearch e => _searchOutput(e, emit),
-          DeleteOutputEvent e => _deleteOutput(e, emit),
         });
   }
 
@@ -77,22 +76,5 @@ class OutputBloc extends Bloc<OutputEvent, OutputState> {
     );
   }
 
-  Future<void> _deleteOutput(
-    DeleteOutputEvent e,
-    Emitter<OutputState> emit,
-  ) async {
-    try {
-      await repository.deleteOutput(e.outputId);
-      print("deleted");
-      List<ProductModel> products = await repository.getProducts(e.categoryId);
-      emit(OutputRefreshState(products: products));
-    } catch (e) {
-      emit(
-        OutputErrorState(
-          products: state.products,
-          message: e.toString(),
-        ),
-      );
-    }
-  }
+
 }

@@ -35,14 +35,4 @@ class OutputPageSearch extends OutputEvent {
   List<Object?> get props => [text, id];
 }
 
-class DeleteOutputEvent extends OutputEvent {
-  final int outputId;
-  final int categoryId;
-  const DeleteOutputEvent({
-    required this.categoryId,
-    required this.outputId,
-  });
 
-  @override
-  List<Object?> get props => [outputId, categoryId];
-}

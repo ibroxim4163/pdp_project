@@ -1,6 +1,6 @@
 part of 'history_bloc.dart';
 
-enum HistoryStatus { loading, loaded, initial }
+enum HistoryStatus { loading, loaded, initial,error }
 
 class HistoryState extends Equatable {
   final HistoryStatus status;

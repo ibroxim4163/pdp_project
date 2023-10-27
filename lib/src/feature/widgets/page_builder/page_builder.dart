@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../common/repositories/api_repository2.dart';
 import '../../../common/services/api_service.dart';
 import '../../balance/balance_screen.dart';
 import '../../history/bloc/history_bloc.dart';
 import '../../history/history_screen.dart';
+import '../../history/repository/history_repository.dart';
 import '../../input/input_screen.dart';
 import '../../output/output_screen.dart';
 import 'custom_bottom_app_bar.dart';
@@ -60,13 +60,22 @@ class _MainPagesState extends State<PageBuilder> {
           const Balance(),
           BlocProvider(
             create: (context) => HistoryBloc(
-              ApiRepositoryImp(
+              HistoryRepositoryImp(
                 APIService(),
               ),
             )..add(
                 const GetInputsAndOutputsForHistory(),
               ),
-            child: const HistoryScreen(),
+            child: BlocProvider(
+              create: (context) => HistoryBloc(
+                HistoryRepositoryImp(
+                  APIService(),
+                ),
+              )..add(
+                  const GetInputsAndOutputsForHistory(),
+                ),
+              child: const HistoryScreen(),
+            ),
           ),
         ],
       ),

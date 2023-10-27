@@ -30,3 +30,10 @@ class SignInErrorState extends SignInState {
     required this.message,
   });
 }
+
+class SignInLoading extends SignInState {
+  const SignInLoading({
+    required super.username,
+    required super.password,
+  });
+}

@@ -84,53 +84,29 @@ class _InputPageProductsState extends State<InputPageProducts> {
             }
 
             return ListView.separated(
-              itemBuilder: (context, index) => Slidable(
-                endActionPane: ActionPane(
-                  motion: const ScrollMotion(),
-                  extentRatio: 1 / 4,
-                  children: [
-                    SlidableAction(
-                      padding: EdgeInsets.zero,
-                      onPressed: (context) {
-                        context.read<InputBloc>().add(
-                              DeleteInputEvent(
-                                categoryId: widget.id,
-                                product: state.products[index],
+              itemBuilder: (context, index) => SizedBox(
+                height: 50,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    title: Text(
+                      state.products[index].name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          Theme.of(context).textTheme.titleMedium!.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.blackColor,
+                                fontFamily: "Inter-Regular",
                               ),
-                            );
-                      },
-                      backgroundColor: AppColors.redColor,
-                      foregroundColor: Colors.white,
-                      icon: Icons.delete,
-                      flex: 1,
-                      label: 'Delete',
                     ),
-                  ],
-                ),
-                child: SizedBox(
-                  height: 50,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      hoverColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      title: Text(
-                        state.products[index].name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            Theme.of(context).textTheme.titleMedium!.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.blackColor,
-                                  fontFamily: "Inter-Regular",
-                                ),
-                      ),
-                      onTap: () => openDialog(
-                        context: context,
-                        productName: state.products[index].name,
-                        id: state.products[index].id,
-                      ),
+                    onTap: () => openDialog(
+                      context: context,
+                      productName: state.products[index].name,
+                      id: state.products[index].id,
                     ),
                   ),
                 ),

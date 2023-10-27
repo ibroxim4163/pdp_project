@@ -6,6 +6,7 @@ import 'package:pdp_project/src/feature/input/widget/category_ddb.dart';
 import '../../../common/constants/app_colors.dart';
 import '../../widgets/app_buttons.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../widgets/page_builder/page_builder.dart';
 import '../bloc/input_bloc.dart';
 import '../models/post_product_model.dart';
 import 'unit_ddb.dart';
@@ -110,14 +111,18 @@ class _AddProductDialogState extends State<AddProductDialog>
                         unit: selectedUnit.value,
                         price: priceController.text,
                       );
-                      //TODO fix adding product
                       context.read<InputBloc>().add(
                             PostProductEvent(
                               categoryId: widget.categoryId,
                               product: productModel,
                             ),
                           );
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const PageBuilder(),
+                        ),
+                      );
                     }
                   },
                 ),

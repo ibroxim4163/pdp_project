@@ -2,17 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdp_project/src/feature/output/repository/output_repository.dart';
 
-import '../../common/constants/app_colors.dart';
 import '../../common/constants/app_icons.dart';
 import '../../common/services/api_service.dart';
 import '../input/input_screen.dart';
-import '../widgets/categories/categories.dart';
 import '../widgets/categories/custom_card.dart';
-import '../widgets/custom_divider.dart';
 import 'bloc/output_bloc.dart';
-import 'widgets/output_dialog.dart';
 import 'widgets/output_products.dart';
-import 'widgets/output_search.dart';
 
 class OutputScreen extends StatelessWidget {
   const OutputScreen({super.key});
@@ -54,6 +49,7 @@ class OutputScreen extends StatelessWidget {
                           ),
                         child: OutputPageProducts(
                           id: Categories.values[index].id,
+                
                         ),
                       ),
                     ),
@@ -61,6 +57,7 @@ class OutputScreen extends StatelessWidget {
                 },
                 imageUrl: AppIcons.categories[index],
                 text: Categories.values[index].category,
+              
               );
             },
           ),

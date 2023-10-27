@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../common/models/input_model.dart';
 import '../../../common/models/output_model.dart';
-import '../../../common/repositories/api_repository2.dart';
+import '../repository/history_repository.dart';
 
 part 'history_event.dart';
 part 'history_state.dart';
 
 class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
-  final ApiRepositoryImp repository;
+  final HistoryRepositoryImp repository;
   HistoryBloc(this.repository)
       : super(
           const HistoryState(
@@ -22,10 +22,14 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
     on<HistoryEvent>((event, emit) => switch (event) {
           GetInputsAndOutputsForHistory() => _getInputsAndOutputs(emit),
           HistoryLoadingEvent() => _loading(emit),
+          DeleteInputEvent e => _deleteInput(e, emit),
+          DeleteOutputEvent e => _deleteOutput(e, emit),
         });
   }
 
-  Future<void> _getInputsAndOutputs(Emitter<HistoryState> emit) async {
+  Future<void> _getInputsAndOutputs(
+    Emitter<HistoryState> emit,
+  ) async {
     emit(
       HistoryState(
         status: HistoryStatus.loading,
@@ -49,4 +53,56 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   }
 
   Future<void> _loading(Emitter<HistoryState> emit) async {}
+
+  Future<void> _deleteInput(
+    DeleteInputEvent e,
+    Emitter<HistoryState> emit,
+  ) async {
+    try {
+      await repository.deleteInput(e.id);
+      List<InputModel> inputs = await repository.getInputs();
+      List<OutputModel> outputs = await repository.getOutputs();
+      emit(
+        HistoryState(
+          status: HistoryStatus.loaded,
+          inputs: inputs,
+          outputs: outputs,
+        ),
+      );
+    } catch (e) {
+      emit(
+        HistoryState(
+          status: HistoryStatus.error,
+          inputs: state.inputs,
+          outputs: state.outputs,
+        ),
+      );
+    }
+  }
+
+  Future<void> _deleteOutput(
+    DeleteOutputEvent e,
+    Emitter<HistoryState> emit,
+  ) async {
+    try {
+      await repository.deleteOutput(e.id);
+      List<InputModel> inputs = await repository.getInputs();
+      List<OutputModel> outputs = await repository.getOutputs();
+      emit(
+        HistoryState(
+          status: HistoryStatus.loaded,
+          inputs: inputs,
+          outputs: outputs,
+        ),
+      );
+    } catch (e) {
+      emit(
+        HistoryState(
+          status: HistoryStatus.error,
+          inputs: state.inputs,
+          outputs: state.outputs,
+        ),
+      );
+    }
+  }
 }

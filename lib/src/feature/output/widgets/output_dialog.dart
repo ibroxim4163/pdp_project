@@ -1,14 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pdp_project/src/common/models/output_model.dart';
-import 'package:pdp_project/src/common/models/product_model.dart';
-import 'package:pdp_project/src/feature/output/models/post_output_model.dart';
+import 'package:pdp_project/src/feature/widgets/page_builder/page_builder.dart';
 
 import '../../../common/constants/app_colors.dart';
+import '../../../common/models/product_model.dart';
 import '../../widgets/app_buttons.dart';
 import '../../widgets/custom_text_field.dart';
 import '../bloc/output_bloc.dart';
+import '../models/post_output_model.dart';
 import 'filial_ddb.dart';
 
 enum Filials {
@@ -127,6 +128,12 @@ class _OutputDialogState extends State<OutputDialog> {
                 context.read<OutputBloc>().add(
                       PostOutputEvent(output),
                     );
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PageBuilder(),
+                  ),
+                );
               }
             },
           ),

@@ -27,7 +27,6 @@ class InputBloc extends Bloc<InputPageEvent, InputState> {
         PostInputEvent e => await _postInput(e, emit),
         PostProductEvent e => await _postProduct(e, emit),
         InputPageSearchEvent e => await _search(e, emit),
-        DeleteInputEvent e => await _deleteInput(e, emit),
         RefreshInput e => _refresh(e, emit),
       },
       transformer: sequential(),
@@ -126,24 +125,7 @@ class InputBloc extends Bloc<InputPageEvent, InputState> {
     }
   }
 
-  Future<void> _deleteInput(
-    DeleteInputEvent e,
-    Emitter emit,
-  ) async {
-    try {
-      print(e.product);
-      await repository.deleteInput(e.product.id);
-      List<ProductModel> products = await repository.getProducts(e.categoryId);
-      emit(InputLoadedState(products: products));
-    } catch (e) {
-      emit(
-        InputErrorState(
-          products: state.products,
-          message: e.toString(),
-        ),
-      );
-    }
-  }
+ 
 
   Future<void> _refresh(
     RefreshInput e,

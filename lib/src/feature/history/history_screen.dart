@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../common/constants/app_colors.dart';
 import '../widgets/custom_divider.dart';
 import '../widgets/products_shimmer.dart';
 import '../widgets/switch_section.dart';
@@ -50,14 +52,35 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       },
                       itemCount: state.inputs.length,
                       itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 10,
+                        return Slidable(
+                          endActionPane: ActionPane(
+                            extentRatio: 1 / 4,
+                            motion: const ScrollMotion(),
+                            children: [
+                              SlidableAction(
+                                flex: 1,
+                                onPressed: (context) {
+                                  context.read<HistoryBloc>().add(
+                                        DeleteInputEvent(
+                                          state.inputs[index].id,
+                                        ),
+                                      );
+                                },
+                                backgroundColor: AppColors.redColor,
+                                foregroundColor: Colors.white,
+                                icon: Icons.delete,
+                              ),
+                            ],
                           ),
-                          child: CustomHistoryProducts(
-                            productName: state.inputs[index].id.toString(),
-                            date: state.inputs[index].date,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 10,
+                            ),
+                            child: CustomHistoryProducts(
+                              productName: state.inputs[index].id.toString(),
+                              date: state.inputs[index].date,
+                            ),
                           ),
                         );
                       },
@@ -81,14 +104,35 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     },
                     itemCount: state.outputs.length,
                     itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 10,
+                      return Slidable(
+                        endActionPane: ActionPane(
+                          extentRatio: 1 / 4,
+                          motion: const ScrollMotion(),
+                          children: [
+                            SlidableAction(
+                              flex: 1,
+                              onPressed: (context) {
+                                context.read<HistoryBloc>().add(
+                                      DeleteOutputEvent(
+                                        state.outputs[index].id,
+                                      ),
+                                    );
+                              },
+                              backgroundColor: AppColors.redColor,
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                            ),
+                          ],
                         ),
-                        child: CustomHistoryProducts(
-                          productName: state.outputs[index].id.toString(),
-                          date: state.outputs[index].date,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 10,
+                          ),
+                          child: CustomHistoryProducts(
+                            productName: state.outputs[index].id.toString(),
+                            date: state.outputs[index].date,
+                          ),
                         ),
                       );
                     },

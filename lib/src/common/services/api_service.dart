@@ -23,7 +23,7 @@ class APIService {
   static final Dio _dio = Dio(
     BaseOptions(
       baseUrl: ApiConst.baseUrl,
-      connectTimeout: const Duration(seconds: 10),
+      connectTimeout: const Duration(seconds: 20),
       receiveTimeout: const Duration(seconds: 10),
       headers: ApiConst.header(tokenAccess),
     ),
@@ -31,7 +31,7 @@ class APIService {
       InterceptorsWrapper(
         onError: (e, handler) async {
           if (e.response?.statusCode == 403 || e.response?.statusCode == 401) {
-            final request = e.requestOptions;
+            // final request = e.requestOptions;
             tokenAccess = await APIService.refToken();
             updateToken();
             return handler.next(e);
@@ -51,10 +51,7 @@ class APIService {
     String queryParametersAll = "",
     Map<String, String> headers = const {},
     Object body = "",
-    // Map<String, String> body = const {},
   }) async {
-    // final params = _queryToString(queryParametersAll);
-    final uri = Uri.parse("$requestPath$queryParametersAll");
 
     try {
       Response response = await switch (method) {

@@ -15,3 +15,12 @@ class HistoryLoadingEvent extends HistoryEvent {
   const HistoryLoadingEvent();
 }
 
+class DeleteInputEvent extends HistoryEvent {
+  final int id;
+  const DeleteInputEvent(this.id);
+}
+
+class DeleteOutputEvent extends HistoryEvent {
+  final int id;
+  const DeleteOutputEvent(this.id);
+}

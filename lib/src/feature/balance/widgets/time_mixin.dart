@@ -27,34 +27,33 @@ mixin TimeMixin on State<Time> {
   }
 
   String? endIsValidate(String? value) {
+    final regex = RegExp(
+        r"(0[1-9]|1[0-9]|2[0-9]|3[0-1])-(0[1-9]|1[0-2])-(201[4-9]|202[0-9])");
+
     if (value != null && value.length < 10) {
       return "Invalid date";
     }
-    String formattedString = value!.split("-").reversed.join("-");
-    if (DateTime.tryParse(formattedString) == null) {
+    if (!regex.hasMatch(value!)) {
       return "Date is not valid";
     }
+    String formattedString = value.split("-").reversed.join("-");
+
+    endTime = DateTime.tryParse(formattedString) ?? DateTime.now();
     return null;
   }
 
   String? startIsValidate(String? value) {
+    final regex = RegExp(
+        r"(0[1-9]|1[0-9]|2[0-9]|3[0-1])-(0[1-9]|1[0-2])-(201[4-9]|202[0-9])");
     if (value != null && value.length < 10) {
       return "Invalid date";
     }
-    String formattedString = value!.split("-").reversed.join("-");
-    if (DateTime.tryParse(formattedString) == null) {
+    if (!regex.hasMatch(value!)) {
       return "Date is not valid";
     }
-    startTime = DateTime.tryParse(formattedString) ?? DateTime.now();
-    String end = untilController.text.split("-").reversed.join("-");
-    endTime = DateTime.tryParse(end) ?? DateTime.now();
-    String boshi = "${startTime.day.toString().padLeft(2, "0")}-"
-        "${startTime.month.toString().padLeft(2, "0")}-${startTime.year}";
-    fromController.text = boshi;
-    String oxiri = "${endTime.day.toString().padLeft(2, "0")}-"
-        "${endTime.month.toString().padLeft(2, "0")}-${endTime.year}";
-    untilController.text = oxiri;
+    String formattedString = value.split("-").reversed.join("-");
 
+    startTime = DateTime.tryParse(formattedString) ?? DateTime.now();
     if (startTime.isAfter(endTime)) {
       return "start time can not be after end time";
     }

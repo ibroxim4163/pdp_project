@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../widgets/app_buttons.dart';
 import '../../widgets/custom_text_field.dart';
+import '../../widgets/page_builder/page_builder.dart';
 import '../bloc/input_bloc.dart';
 import '../models/post_input_model.dart';
 
@@ -79,7 +80,12 @@ class _InputDialogState extends State<InputDialog> {
                 price: priceController.text,
               );
               context.read<InputBloc>().add(PostInputEvent(inputModel));
-              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PageBuilder(),
+                ),
+              );
             },
           ),
           const SizedBox(height: 7),
