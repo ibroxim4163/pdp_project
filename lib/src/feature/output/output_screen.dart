@@ -64,6 +64,5 @@ class OutputScreen extends StatelessWidget {
         ),
       ),
     );
-  
   }
 }

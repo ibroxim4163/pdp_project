@@ -34,99 +34,101 @@ class _AddProductDialogState extends State<AddProductDialog>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Dialog(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(35),
+    return SingleChildScrollView(
+      child: Dialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(35),
+          ),
         ),
-      ),
-      child: SizedBox(
-        height: size.height * 0.9,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 25),
-                    child: Text(
-                      "Unit",
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: AppColors.blackColor,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: "Inter-Regular",
-                          ),
-                    ),
-                  ),
-                ),
-                CustomCategoryDropDownButton(
-                  selectedCategory: selectedCategoryId,
-                ),
-                CustomTextField(
-                  controller: nameController,
-                  text: "Name",
-                  validator: validateName,
-                ),
-                CustomTextField(
-                  controller: countController,
-                  text: "Count",
-                  inputFormatter: FilteringTextInputFormatter.digitsOnly,
-                  validator: validateCount,
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 25),
-                    child: Text(
-                      "Unit",
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: AppColors.blackColor,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: "Inter-Regular",
-                          ),
-                    ),
-                  ),
-                ),
-                CustomUnitDropDownButton(
-                  selectedUnit: selectedUnit,
-                ),
-                CustomTextField(
-                  controller: priceController,
-                  text: "Price",
-                  validator: validatePrice,
-                ),
-                const SizedBox(height: 15),
-                CustomButton(
-                  onCancelled: () => Navigator.pop(context),
-                  onSubmitted: () {
-                    if (_formKey.currentState!.validate()) {
-                      final PostProductModel productModel = PostProductModel(
-                        category: selectedCategoryId.value,
-                        name: nameController.text,
-                        count: int.tryParse(countController.text) ?? 1,
-                        unit: selectedUnit.value,
-                        price: priceController.text,
-                      );
-                      context.read<InputBloc>().add(
-                            PostProductEvent(
-                              categoryId: widget.categoryId,
-                              product: productModel,
+        child: SizedBox(
+          height: size.height * 0.9,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: Text(
+                        "Unit",
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              color: AppColors.blackColor,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "Inter-Regular",
                             ),
-                          );
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PageBuilder(),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ],
+                      ),
+                    ),
+                  ),
+                  CustomCategoryDropDownButton(
+                    selectedCategory: selectedCategoryId,
+                  ),
+                  CustomTextField(
+                    controller: nameController,
+                    text: "Name",
+                    validator: validateName,
+                  ),
+                  CustomTextField(
+                    controller: countController,
+                    text: "Count",
+                    inputFormatter: FilteringTextInputFormatter.digitsOnly,
+                    validator: validateCount,
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: Text(
+                        "Unit",
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                              color: AppColors.blackColor,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: "Inter-Regular",
+                            ),
+                      ),
+                    ),
+                  ),
+                  CustomUnitDropDownButton(
+                    selectedUnit: selectedUnit,
+                  ),
+                  CustomTextField(
+                    controller: priceController,
+                    text: "Price",
+                    validator: validatePrice,
+                  ),
+                  const SizedBox(height: 15),
+                  CustomButton(
+                    onCancelled: () => Navigator.pop(context),
+                    onSubmitted: () {
+                      if (_formKey.currentState!.validate()) {
+                        final PostProductModel productModel = PostProductModel(
+                          category: selectedCategoryId.value,
+                          name: nameController.text,
+                          count: int.tryParse(countController.text) ?? 1,
+                          unit: selectedUnit.value,
+                          price: priceController.text,
+                        );
+                        context.read<InputBloc>().add(
+                              PostProductEvent(
+                                categoryId: widget.categoryId,
+                                product: productModel,
+                              ),
+                            );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const PageBuilder(),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

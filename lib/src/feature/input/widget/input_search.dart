@@ -10,6 +10,7 @@ import 'add_product_dialog.dart';
 
 class InputSearch extends StatefulWidget {
   final int id;
+
   const InputSearch({
     required this.id,
     super.key,
@@ -54,15 +55,25 @@ class _InputSearchState extends State<InputSearch> {
                   });
                 }
               },
+              onSubmitted: (value) {
+                if (value.isEmpty) {
+                  showIcon = true;
+                } else {
+                  showIcon = true;
+                }
+                setState(() {});
+              },
               cursorHeight: 25,
               cursorColor: AppColors.mainColor,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * .01,
+                    horizontal: MediaQuery.of(context).size.width * .04),
+                alignLabelWithHint: true,
                 hintText: "Search",
-                hintStyle: TextStyle(
-                  color: AppColors.mainColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                enabledBorder: OutlineInputBorder(
+                hintStyle: const TextStyle(
+                    color: AppColors.mainColor, fontWeight: FontWeight.w500),
+                enabledBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(26),
                   ),
@@ -71,7 +82,7 @@ class _InputSearchState extends State<InputSearch> {
                     width: 1,
                   ),
                 ),
-                focusedBorder: OutlineInputBorder(
+                focusedBorder: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(26),
                   ),
@@ -80,7 +91,7 @@ class _InputSearchState extends State<InputSearch> {
                     width: .3,
                   ),
                 ),
-                suffixIcon: Padding(
+                suffixIcon: const Padding(
                   padding: EdgeInsets.all(13),
                   child: Image(
                     image: AssetImage(AppIcons.loop),
