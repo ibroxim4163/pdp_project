@@ -37,3 +37,10 @@ class SignInLoading extends SignInState {
     required super.password,
   });
 }
+
+class SignInSuccess extends SignInState {
+  const SignInSuccess({
+    required super.username,
+    required super.password,
+  });
+}

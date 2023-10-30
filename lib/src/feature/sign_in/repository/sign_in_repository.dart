@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:pdp_project/src/common/models/token_model.dart';
 
 import '../../../common/constants/api_constants.dart';
@@ -48,15 +49,22 @@ class SignInRepositoryImp implements SignInRepository {
       "username": username,
       "password": password,
     };
+    String response = "";
+    try {
+      response = await service.request(
+        ApiConst.postToken,
+        headers: header,
+        body: jsonEncode(body),
+        method: Method.post,
+      );
 
-    String response = await service.request(
-      ApiConst.postToken,
-      headers: header,
-      body: jsonEncode(body),
-      method: Method.post,
-    );
+      print("-=-=-=-=-=-=-=-=- debug");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
 
     final TokenModel token = TokenModel.fromMap(jsonDecode(response));
+    print("useruseruser=$token");
 
     return token;
   }

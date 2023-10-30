@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pdp_project/src/feature/sign_in/models/sign_in_model.dart';
+import 'package:pdp_project/src/common/services/secure_storage_servise.dart';
 
+import '../../../common/constants/api_constants.dart';
 import '../repository/sign_in_repository.dart';
 
 part 'sign_in_event.dart';
@@ -22,11 +23,21 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
             username: state.username,
             password: state.password,
           ));
-          final SignInModel signInModel = await repository.signUserIn(
+          final user = await repository.getToken(
             event.username,
             event.password,
           );
+          SecureStorage().writeSecureStore(user);
+          // tokenAccess = user.access;
+          // tokenRefresh = user.refresh;
+          emit(
+            SignInSuccess(
+              username: event.username,
+              password: event.password,
+            ),
+          );
         } catch (e) {
+          print(e);
           emit(
             SignInErrorState(
               username: state.username,

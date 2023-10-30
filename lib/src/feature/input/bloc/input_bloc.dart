@@ -1,4 +1,3 @@
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +28,6 @@ class InputBloc extends Bloc<InputPageEvent, InputState> {
         InputPageSearchEvent e => await _search(e, emit),
         RefreshInput e => _refresh(e, emit),
       },
-      transformer: sequential(),
     );
   }
 
