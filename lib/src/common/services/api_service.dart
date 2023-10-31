@@ -31,13 +31,15 @@ class APIService {
   )..interceptors.add(
       InterceptorsWrapper(
         onError: (e, handler) async {
-          if (e.response?.statusCode == 403 || e.response?.statusCode == 401) {
+          print("========================");
+          print("${e.response?.statusCode}");
+          print("========================");
+          if (e.response?.statusCode == 403) {
             // final request = e.requestOptions;
             tokenAccess = await APIService.refToken();
             updateToken();
             handler.next(e);
           }
-          print("=====");
           handler.next(e);
         },
       ),
@@ -54,38 +56,16 @@ class APIService {
     Map<String, String> headers = const {},
     Object body = "",
   }) async {
-
     try {
-      Response response = await switch (method) {
+      final response = await switch (method) {
         Method.get => _dio.get(requestPath),
         Method.post => _dio.post(requestPath, data: body),
         Method.put => _dio.put(requestPath, data: body),
         Method.patch => _dio.patch(requestPath, data: body),
         Method.delete => _dio.delete(requestPath),
       };
-      return switch (response.statusCode!) {
-        < 200 => throw Error.throwWithStackTrace(
-            "${response.statusMessage}",
-            StackTrace.current,
-          ),
-        >= 200 && < 300 => jsonEncode(response.data),
-        >= 300 && 400 => throw Error.throwWithStackTrace(
-          "${response.statusMessage}",
-            StackTrace.current,
-          ),
-        >= 400 && < 500 => throw Error.throwWithStackTrace(
-            "Client Error",
-            StackTrace.current,
-          ),
-        >= 500 => throw Error.throwWithStackTrace(
-            "Server Error",
-            StackTrace.current,
-          ),
-        _ => throw Error.throwWithStackTrace(
-            "Unexpected Error",
-            StackTrace.current,
-          ),
-      };
+
+      return jsonDecode(response.data);
     } on TimeoutException catch (e, stackTrace) {
       debugPrint("$e\n$stackTrace");
       throw Error.throwWithStackTrace(
@@ -99,7 +79,7 @@ class APIService {
             headers: headers,
             method: method,
             queryParametersAll: queryParametersAll);
-      } else if (e.response?.statusCode == 400) {
+      } else if (e.response?.statusCode == 401) {
         throw Error.throwWithStackTrace(const AdminRegisterError("Admin not found"), stackTrace);
       } else {
         debugPrint("$e\n$stackTrace");
