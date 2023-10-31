@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:pdp_project/src/common/constants/custom_error.dart';
 
 import '../constants/api_constants.dart';
 
@@ -34,9 +35,10 @@ class APIService {
             // final request = e.requestOptions;
             tokenAccess = await APIService.refToken();
             updateToken();
-            return handler.next(e);
+            handler.next(e);
           }
-          return handler.next(e);
+          print("=====");
+          handler.next(e);
         },
       ),
     );
@@ -68,7 +70,7 @@ class APIService {
           ),
         >= 200 && < 300 => jsonEncode(response.data),
         >= 300 && 400 => throw Error.throwWithStackTrace(
-            "${response.statusMessage}",
+          "${response.statusMessage}",
             StackTrace.current,
           ),
         >= 400 && < 500 => throw Error.throwWithStackTrace(
@@ -97,9 +99,12 @@ class APIService {
             headers: headers,
             method: method,
             queryParametersAll: queryParametersAll);
+      } else if (e.response?.statusCode == 400) {
+        throw Error.throwWithStackTrace(const AdminRegisterError("Admin not found"), stackTrace);
+      } else {
+        debugPrint("$e\n$stackTrace");
+        rethrow;
       }
-      debugPrint("$e\n$stackTrace");
-      rethrow;
     } catch (e, stackTrace) {
       debugPrint("$e\n$stackTrace");
       rethrow;
