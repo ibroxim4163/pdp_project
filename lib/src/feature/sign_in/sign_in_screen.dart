@@ -72,15 +72,7 @@ class _SignInState extends State<SignIn> {
           debugPrint(tokenRefresh);
         }
         if (state is SignInErrorState) {
-          Align(
-            alignment: Alignment.topCenter,
-            child: Text(
-              state.message,
-              style: const TextStyle(
-                color: AppColors.redColor,
-              ),
-            ),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
         } else if (state is SignInLoading) {
           const Center(
             child: CircularProgressIndicator(),

@@ -50,7 +50,7 @@ class SignInRepositoryImp implements SignInRepository {
       "password": password,
     };
     String response = "";
-    try {
+   
       response = await service.request(
         ApiConst.postToken,
         headers: header,
@@ -59,9 +59,7 @@ class SignInRepositoryImp implements SignInRepository {
       );
 
       print("-=-=-=-=-=-=-=-=- debug");
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+
 
     final TokenModel token = TokenModel.fromMap(jsonDecode(response));
     print("useruseruser=$token");
