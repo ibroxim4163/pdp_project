@@ -96,7 +96,7 @@ class OutputPageProducts extends StatelessWidget {
                       trailing: Text(
                         state.products[index].count.toString(),
                         style: Theme.of(context)
-                            .textTheme!
+                            .textTheme
                             .titleMedium!
                             .copyWith(
                               color: state.products[index].count > 3

@@ -75,7 +75,12 @@ class _TimeState extends State<Time> with TimeMixin {
                   fixedSize: const Size(350, 60),
                   shape: const StadiumBorder()),
               onPressed: onSubmitted,
-              child: const Text("Submit"),
+              child: const Text(
+                "Submit",
+                style: TextStyle(
+                  color: AppColors.whiteColor,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             OutlinedButton(

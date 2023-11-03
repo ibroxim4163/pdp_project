@@ -1,6 +1,6 @@
 class InputModel {
   final int id;
-  final int product;
+  final String product;
   final int count;
   final String price;
   final DateTime date;
@@ -17,7 +17,7 @@ class InputModel {
 
   InputModel copyWith({
     int? id,
-    int? product,
+    String? product,
     int? count,
     String? price,
     DateTime? date,
@@ -60,7 +60,7 @@ class InputModel {
   Map<String, Object?> toJson() {
     return <String, Object?>{
       'id': id,
-      'product': product,
+      'product_name': product,
       'count': count,
       'price': price,
       'date': date.toIso8601String(),
@@ -70,7 +70,7 @@ class InputModel {
   factory InputModel.fromJson(Map<String, Object?> map) {
     return InputModel(
       id: map['id'] as int,
-      product: map['product'] as int,
+      product: map['product_name'] as String,
       count: map['count'] as int,
       price: map['price'] as String,
       date: DateTime.tryParse(map['date'] as String) ??DateTime.now(),

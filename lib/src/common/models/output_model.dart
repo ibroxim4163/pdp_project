@@ -8,7 +8,7 @@ import '../../feature/output/widgets/output_dialog.dart';
 
 class OutputModel extends Equatable{
   final int id;
-  final int product;
+  final String product;
   final int count;
   final Filials filial;
   final DateTime date;
@@ -23,7 +23,7 @@ class OutputModel extends Equatable{
 
   OutputModel copyWith({
     int? id,
-    int? product,
+    String? product,
     int? count,
     Filials? filial,
     DateTime? date,
@@ -46,7 +46,7 @@ class OutputModel extends Equatable{
   Map<String, Object?> toJson() {
     return <String, Object?>{
       'id': id,
-      'product': product,
+      'product_name': product,
       'count': count,
       'filial': filial.backend,
       'date': date.toIso8601String(),
@@ -56,7 +56,7 @@ class OutputModel extends Equatable{
   factory OutputModel.fromJson(Map<String, Object?> map) {
     return OutputModel(
       id: map['id'] as int,
-      product: map['product'] as int,
+      product: map['product_name'] as String,
       count: map['count'] as int,
       filial: Filials.values.where((e) => e.backend==(map['filial'] as String)).first,
       date: DateTime.tryParse(map['date'] as String) ?? DateTime.now(),

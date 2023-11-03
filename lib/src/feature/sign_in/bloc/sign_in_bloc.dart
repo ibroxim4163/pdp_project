@@ -28,8 +28,8 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
             event.password,
           );
           SecureStorage().writeSecureStore(user);
-          // tokenAccess = user.access;
-          // tokenRefresh = user.refresh;
+          tokenAccess = user.access;
+          tokenRefresh = user.refresh;
           emit(
             SignInSuccess(
               username: event.username,

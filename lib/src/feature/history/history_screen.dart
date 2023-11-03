@@ -78,7 +78,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               vertical: 10,
                             ),
                             child: CustomHistoryProducts(
-                              productName: state.inputs[index].id.toString(),
+                              productName: state.inputs[index].product,
                               date: state.inputs[index].date,
                             ),
                           ),
@@ -130,7 +130,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             vertical: 10,
                           ),
                           child: CustomHistoryProducts(
-                            productName: state.outputs[index].id.toString(),
+                            productName: state.outputs[index].product,
                             date: state.outputs[index].date,
                           ),
                         ),
